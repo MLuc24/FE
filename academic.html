@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduCRM - Academic Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#64748b',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        accent: '#0d9488'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .slide-enter {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        .slide-enter-active {
+            transform: translateX(0);
+            opacity: 1;
+            transition: all 0.3s ease-in-out;
+        }
+        .slide-exit {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .slide-exit-active {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .editable-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .editable-cell:hover {
+            background-color: #f3f4f6;
+        }
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 fixed top-0 left-0 right-0 z-50">
+        <div class="flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-bold text-gray-900">EduCRM</span>
+                <span class="text-sm text-gray-500 hidden md:inline">Academic Portal</span>
+            </div>
+
+            <!-- Global Search -->
+            <div class="flex-1 max-w-2xl mx-8 hidden md:block">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search students, schedules, classes..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center space-x-4">
+                <!-- Role Switcher Dropdown -->
+                <div class="relative">
+                    <button id="role-dropdown-btn" onclick="toggleRoleDropdown()" 
+                            class="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
+                        <div class="w-4 h-4 bg-green-600 rounded flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white text-xs"></i>
+                        </div>
+                        <span id="current-role">Academic</span>
+                        <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="role-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <div class="py-2">
+                            <div class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                                Switch Role
+                            </div>
+                            <a href="index.html" onclick="switchRole('Sales', 'index.html')" 
+                               class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Sales Dashboard</div>
+                                    <div class="text-xs text-gray-500">Leads, deals & proposals</div>
+                                </div>
+                            </a>
+                            <a href="academic.html" onclick="switchRole('Academic', 'academic.html')" 
+                               class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-white bg-green-50 border-l-4 border-green-500">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-green-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-green-700">Academic Portal</div>
+                                    <div class="text-xs text-green-600">Tests, demos & students</div>
+                                </div>
+                            </a>
+                            <a href="marketing.html" onclick="switchRole('Marketing', 'marketing.html')" 
+                               class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-bullhorn text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Marketing Hub</div>
+                                    <div class="text-xs text-gray-500">Campaigns & analytics</div>
+                                </div>
+                            </a>
+                            <a href="salemanager.html" onclick="switchRole('Sales Manager', 'salemanager.html')" 
+                               class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-orange-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Sales Manager</div>
+                                    <div class="text-xs text-gray-500">Team & performance</div>
+                                </div>
+                            </a>
+                            <a href="a1.html" onclick="switchRole('A1 Class', 'a1.html')" 
+                               class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chalkboard-teacher text-teal-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">A1 Class Management</div>
+                                    <div class="text-xs text-gray-500">Class activities & progress</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="relative p-2 text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-bell"></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-danger rounded-full"></span>
+                </button>
+                <button class="p-2 text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%236366f1'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='14' font-weight='bold'%3EAM%3C/text%3E%3C/svg%3E" 
+                         alt="User" class="w-8 h-8 rounded-full">
+                    <span class="text-sm font-medium text-gray-700 hidden md:inline">Dr. Martinez</span>
+                    <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex pt-16">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 fixed left-0 top-16 bottom-0 overflow-y-auto">
+            <nav class="p-4 space-y-2">
+                <a href="#" onclick="showPage('dashboard')" class="nav-item active flex items-center space-x-3 px-3 py-2 rounded-lg text-primary bg-blue-50">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" onclick="showPage('schedule')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="#" onclick="showPage('students')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Students</span>
+                </a>
+                <a href="#" onclick="showPage('test-detail')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span>Test Detail</span>
+                </a>
+                <a href="#" onclick="showPage('demo-scheduling')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-presentation w-5"></i>
+                    <span>Demo Scheduling</span>
+                </a>
+                <a href="#" onclick="showPage('student-detail')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-user-graduate w-5"></i>
+                    <span>Student Profile</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-6">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Academic Dashboard</h1>
+                    <p class="text-gray-600">Welcome back, Dr. Martinez</p>
+                </div>
+
+                <!-- Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Active Students</p>
+                                <p class="text-2xl font-bold text-gray-900">247</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-600 text-sm font-medium">↗ 12% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending Tests</p>
+                                <p class="text-2xl font-bold text-gray-900">18</p>
+                            </div>
+                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clipboard-check text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-orange-600 text-sm font-medium">Due this week</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Completion Rate</p>
+                                <p class="text-2xl font-bold text-gray-900">89%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-line text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-600 text-sm font-medium">↗ 5% improvement</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Demo Sessions</p>
+                                <p class="text-2xl font-bold text-gray-900">24</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-presentation text-purple-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-purple-600 text-sm font-medium">This month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Recent Activities -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Recent Activities</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-green-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-900">Test completed: JavaScript Fundamentals</p>
+                                            <p class="text-sm text-gray-500">Sarah Johnson scored 92/100</p>
+                                            <p class="text-xs text-gray-400">2 hours ago</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-calendar text-blue-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-900">Demo session scheduled</p>
+                                            <p class="text-sm text-gray-500">Mike Chen - Python Basics Demo</p>
+                                            <p class="text-xs text-gray-400">4 hours ago</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-exclamation-triangle text-orange-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-900">Late submission alert</p>
+                                            <p class="text-sm text-gray-500">Emma Davis - HTML/CSS Project overdue</p>
+                                            <p class="text-xs text-gray-400">6 hours ago</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user-plus text-purple-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-900">New student enrolled</p>
+                                            <p class="text-sm text-gray-500">Alex Thompson joined Web Development</p>
+                                            <p class="text-xs text-gray-400">1 day ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Upcoming -->
+                    <div class="space-y-6">
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button onclick="showPage('demo-scheduling')" class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                                    <i class="fas fa-calendar-plus text-sm"></i>
+                                    <span>Schedule Demo</span>
+                                </button>
+                                <button onclick="showPage('test-detail')" class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-clipboard-check text-sm"></i>
+                                    <span>Grade Tests</span>
+                                </button>
+                                <button onclick="showPage('students')" class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-users text-sm"></i>
+                                    <span>View Students</span>
+                                </button>
+                                <button onclick="showPage('schedule')" class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-calendar text-sm"></i>
+                                    <span>View Schedule</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Events -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Events</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Team Meeting</p>
+                                        <p class="text-xs text-gray-500">Today, 2:00 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Python Demo Session</p>
+                                        <p class="text-xs text-gray-500">Tomorrow, 10:00 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Test Review</p>
+                                        <p class="text-xs text-gray-500">Wed, 3:00 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Page -->
+            <div id="schedule-page" class="page hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Academic Schedule</h1>
+                    <p class="text-gray-600">Manage classes, tests, and academic events</p>
+                </div>
+
+                <!-- Schedule Controls -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg">Today</button>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Week</button>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Month</button>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="text-lg font-semibold text-gray-900">September 2025</span>
+                                <button class="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                <i class="fas fa-plus mr-2"></i>Add Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Grid -->
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="grid grid-cols-8 border-b border-gray-200">
+                        <div class="p-4 text-sm font-medium text-gray-500"></div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Mon</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Tue</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Wed</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Thu</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Fri</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Sat</div>
+                        <div class="p-4 text-sm font-medium text-gray-900 text-center">Sun</div>
+                    </div>
+
+                    <!-- Time Slots -->
+                    <div class="divide-y divide-gray-200">
+                        <div class="grid grid-cols-8 min-h-[80px]">
+                            <div class="p-4 text-sm text-gray-500 border-r border-gray-200">09:00</div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-blue-100 text-blue-800 p-2 rounded text-xs">
+                                    <div class="font-medium">JavaScript Basics</div>
+                                    <div>Room A1</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-green-100 text-green-800 p-2 rounded text-xs">
+                                    <div class="font-medium">Python Demo</div>
+                                    <div>Room B2</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2"></div>
+                        </div>
+
+                        <div class="grid grid-cols-8 min-h-[80px]">
+                            <div class="p-4 text-sm text-gray-500 border-r border-gray-200">10:00</div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-purple-100 text-purple-800 p-2 rounded text-xs">
+                                    <div class="font-medium">HTML/CSS Test</div>
+                                    <div>Room C1</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-orange-100 text-orange-800 p-2 rounded text-xs">
+                                    <div class="font-medium">React Workshop</div>
+                                    <div>Room A2</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2"></div>
+                        </div>
+
+                        <div class="grid grid-cols-8 min-h-[80px]">
+                            <div class="p-4 text-sm text-gray-500 border-r border-gray-200">11:00</div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-red-100 text-red-800 p-2 rounded text-xs">
+                                    <div class="font-medium">Final Exam</div>
+                                    <div>Room D1</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2"></div>
+                        </div>
+
+                        <div class="grid grid-cols-8 min-h-[80px]">
+                            <div class="p-4 text-sm text-gray-500 border-r border-gray-200">14:00</div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100">
+                                <div class="bg-indigo-100 text-indigo-800 p-2 rounded text-xs">
+                                    <div class="font-medium">Team Meeting</div>
+                                    <div>Conference Room</div>
+                                </div>
+                            </div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2 border-r border-gray-100"></div>
+                            <div class="p-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Page -->
+            <div id="students-page" class="page hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Student Management</h1>
+                    <p class="text-gray-600">Manage all students and their academic progress</p>
+                </div>
+
+                <!-- Student Controls -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Search students..." 
+                                       class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option>All Programs</option>
+                                <option>Web Development</option>
+                                <option>Python Programming</option>
+                                <option>Data Science</option>
+                            </select>
+                            <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option>All Status</option>
+                                <option>Active</option>
+                                <option>Pending</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-plus mr-2"></i>Add Student
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students List -->
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Student</th>
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Program</th>
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Progress</th>
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Last Activity</th>
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Status</th>
+                                    <th class="text-left p-4 text-sm font-medium text-gray-500">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23f59e0b'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ESJ%3C/text%3E%3C/svg%3E" 
+                                                 alt="Student" class="w-10 h-10 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Sarah Johnson</div>
+                                                <div class="text-sm text-gray-500">sarah.j@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">Web Development</div>
+                                        <div class="text-sm text-gray-500">Full Stack</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">85%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">2 hours ago</div>
+                                        <div class="text-sm text-gray-500">JavaScript Test</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="showPage('student-detail')" class="p-2 text-gray-600 hover:text-blue-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-green-600">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-red-600">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%2310b981'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" 
+                                                 alt="Student" class="w-10 h-10 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Mike Chen</div>
+                                                <div class="text-sm text-gray-500">mike.c@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">Python Programming</div>
+                                        <div class="text-sm text-gray-500">Data Science</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: 67%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">67%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">5 hours ago</div>
+                                        <div class="text-sm text-gray-500">Python Assignment</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="showPage('student-detail')" class="p-2 text-gray-600 hover:text-blue-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-green-600">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-red-600">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%236366f1'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3EED%3C/text%3E%3C/svg%3E" 
+                                                 alt="Student" class="w-10 h-10 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Emma Davis</div>
+                                                <div class="text-sm text-gray-500">emma.d@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">Web Development</div>
+                                        <div class="text-sm text-gray-500">Frontend</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-orange-600 h-2 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">45%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">1 day ago</div>
+                                        <div class="text-sm text-gray-500">CSS Project</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                            Behind
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="showPage('student-detail')" class="p-2 text-gray-600 hover:text-blue-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-green-600">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-red-600">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23ef4444'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3EAT%3C/text%3E%3C/svg%3E" 
+                                                 alt="Student" class="w-10 h-10 rounded-full">
+                                            <div>
+                                                <div class="font-medium text-gray-900">Alex Thompson</div>
+                                                <div class="text-sm text-gray-500">alex.t@email.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">Data Science</div>
+                                        <div class="text-sm text-gray-500">Machine Learning</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-600 h-2 rounded-full" style="width: 92%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">92%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="text-sm text-gray-900">30 minutes ago</div>
+                                        <div class="text-sm text-gray-500">ML Assignment</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="showPage('student-detail')" class="p-2 text-gray-600 hover:text-blue-600">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-green-600">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="p-2 text-gray-600 hover:text-red-600">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between p-4 border-t border-gray-200">
+                        <div class="text-sm text-gray-500">
+                            Showing 1-4 of 247 students
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-1 bg-primary text-white rounded text-sm">1</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">2</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">3</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Detail Page -->
+            <div id="test-detail-page" class="page hidden">
+                <!-- Breadcrumb -->
+                <nav class="flex mb-4 text-sm">
+                    <a href="#" class="text-gray-500 hover:text-gray-700">Tests</a>
+                    <i class="fas fa-chevron-right mx-2 text-gray-400"></i>
+                    <span class="text-gray-900">JavaScript Fundamentals Test</span>
+                </nav>
+
+                <!-- Test Header -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h1 class="text-2xl font-bold text-gray-900 mb-2">JavaScript Fundamentals Test</h1>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-calendar text-gray-400"></i>
+                                    <span class="text-gray-700">January 15, 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-clock text-gray-400"></i>
+                                    <span class="text-gray-700">10:00 AM - 11:30 AM</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-map-marker-alt text-gray-400"></i>
+                                    <span class="text-gray-700">Room A1</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                    <span class="text-gray-700">Dr. Martinez</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="openScoreModal()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-edit mr-2"></i>Record Scores
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-calendar-alt mr-2"></i>Reschedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Student List -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Student List</h3>
+                                <p class="text-sm text-gray-600">15 students registered</p>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23f59e0b'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ESJ%3C/text%3E%3C/svg%3E" 
+                                                         alt="Student" class="w-10 h-10 rounded-full">
+                                                    <div class="ml-3">
+                                                        <p class="text-sm font-medium text-gray-900">Sarah Johnson</p>
+                                                        <p class="text-sm text-gray-500">Web Development</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">sarah.j@email.com</td>
+                                            <td class="px-6 py-4">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    Present
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div onclick="editScore(this, 'sarah-johnson')" class="editable-cell inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 cursor-pointer">
+                                                    92/100
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button onclick="addNote('sarah-johnson')" class="text-gray-400 hover:text-gray-600">
+                                                    <i class="fas fa-sticky-note"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%236366f1'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" 
+                                                         alt="Student" class="w-10 h-10 rounded-full">
+                                                    <div class="ml-3">
+                                                        <p class="text-sm font-medium text-gray-900">Mike Chen</p>
+                                                        <p class="text-sm text-gray-500">Data Science</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">mike.c@email.com</td>
+                                            <td class="px-6 py-4">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    Absent
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div onclick="editScore(this, 'mike-chen')" class="editable-cell inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 cursor-pointer">
+                                                    Not taken
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button onclick="addNote('mike-chen')" class="text-gray-400 hover:text-gray-600">
+                                                    <i class="fas fa-sticky-note"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%2310b981'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3EED%3C/text%3E%3C/svg%3E" 
+                                                         alt="Student" class="w-10 h-10 rounded-full">
+                                                    <div class="ml-3">
+                                                        <p class="text-sm font-medium text-gray-900">Emma Davis</p>
+                                                        <p class="text-sm text-gray-500">Mobile Development</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">emma.d@email.com</td>
+                                            <td class="px-6 py-4">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    Present
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div onclick="editScore(this, 'emma-davis')" class="editable-cell inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 cursor-pointer">
+                                                    78/100
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button onclick="addNote('emma-davis')" class="text-gray-400 hover:text-gray-600">
+                                                    <i class="fas fa-sticky-note"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics & Actions -->
+                    <div class="space-y-6">
+                        <!-- Analytics Widget -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Test Analytics</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Average Score</span>
+                                    <span class="text-lg font-semibold text-gray-900">85/100</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Pass Rate</span>
+                                    <span class="text-lg font-semibold text-success">87%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Highest Score</span>
+                                    <span class="text-lg font-semibold text-gray-900">92/100</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Lowest Score</span>
+                                    <span class="text-lg font-semibold text-gray-900">78/100</span>
+                                </div>
+                                <div class="pt-2 border-t border-gray-200">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-gray-600">Attendance</span>
+                                        <span class="font-medium">13/15 (87%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button onclick="openScoreModal()" class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Record Scores</span>
+                                </button>
+                                <button class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Reschedule Test</span>
+                                </button>
+                                <button class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <span>Add Note</span>
+                                </button>
+                                <button class="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-download"></i>
+                                    <span>Export Results</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo Scheduling Page -->
+            <div id="demo-scheduling-page" class="page hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Schedule Demo Session</h1>
+                    <p class="text-gray-600">Create a new demo session for students</p>
+                </div>
+
+                <!-- Step Wizard -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center space-x-4">
+                            <div class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                            <span class="text-sm font-medium text-gray-900">Select Student</span>
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                        <div class="flex items-center space-x-4">
+                            <div class="step-indicator w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">2</div>
+                            <span class="text-sm text-gray-600">Assign Staff</span>
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                        <div class="flex items-center space-x-4">
+                            <div class="step-indicator w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">3</div>
+                            <span class="text-sm text-gray-600">Time & Room</span>
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                        <div class="flex items-center space-x-4">
+                            <div class="step-indicator w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-600">4</div>
+                            <span class="text-sm text-gray-600">Confirm</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Select Student -->
+                    <div id="step-1" class="step-content">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Select Student for Demo</h3>
+                        
+                        <div class="mb-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Search students..." 
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div onclick="selectStudent('sarah-johnson')" class="student-card p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23f59e0b'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-family='Arial' font-size='18' font-weight='bold'%3ESJ%3C/text%3E%3C/svg%3E" 
+                                         alt="Student" class="w-12 h-12 rounded-full">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Sarah Johnson</p>
+                                        <p class="text-sm text-gray-600">Web Development</p>
+                                        <p class="text-xs text-gray-500">Ready for demo</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectStudent('mike-chen')" class="student-card p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%236366f1'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-family='Arial' font-size='18' font-weight='bold'%3EMC%3C/text%3E%3C/svg%3E" 
+                                         alt="Student" class="w-12 h-12 rounded-full">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Mike Chen</p>
+                                        <p class="text-sm text-gray-600">Data Science</p>
+                                        <p class="text-xs text-gray-500">Ready for demo</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectStudent('emma-davis')" class="student-card p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%2310b981'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-family='Arial' font-size='18' font-weight='bold'%3EED%3C/text%3E%3C/svg%3E" 
+                                         alt="Student" class="w-12 h-12 rounded-full">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Emma Davis</p>
+                                        <p class="text-sm text-gray-600">Mobile Development</p>
+                                        <p class="text-xs text-gray-500">Ready for demo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-6">
+                            <button onclick="nextStep(2)" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 disabled:opacity-50" disabled id="next-step-1">
+                                Next: Assign Staff
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Assign Staff -->
+                    <div id="step-2" class="step-content hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Assign Academic Staff</h3>
+                        
+                        <div class="space-y-4">
+                            <div onclick="selectStaff('dr-martinez')" class="staff-card p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%236366f1'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-family='Arial' font-size='18' font-weight='bold'%3EDM%3C/text%3E%3C/svg%3E" 
+                                             alt="Staff" class="w-12 h-12 rounded-full">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Dr. Martinez</p>
+                                            <p class="text-sm text-gray-600">Senior Academic Instructor</p>
+                                            <p class="text-xs text-gray-500">JavaScript, React, Node.js</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-success rounded-full"></div>
+                                        <span class="text-sm text-success">Available</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectStaff('prof-johnson')" class="staff-card p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%2310b981'/%3E%3Ctext x='24' y='30' text-anchor='middle' fill='white' font-family='Arial' font-size='18' font-weight='bold'%3EPJ%3C/text%3E%3C/svg%3E" 
+                                             alt="Staff" class="w-12 h-12 rounded-full">
+                                        <div>
+                                            <p class="font-medium text-gray-900">Prof. Johnson</p>
+                                            <p class="text-sm text-gray-600">Academic Instructor</p>
+                                            <p class="text-xs text-gray-500">Python, Data Science, ML</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-2 h-2 bg-warning rounded-full"></div>
+                                        <span class="text-sm text-warning">Busy until 3 PM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button onclick="prevStep(1)" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Back
+                            </button>
+                            <button onclick="nextStep(3)" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 disabled:opacity-50" disabled id="next-step-2">
+                                Next: Time & Room
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Time & Room -->
+                    <div id="step-3" class="step-content hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Select Time & Room</h3>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Available Time Slots</h4>
+                                <div class="space-y-2">
+                                    <div onclick="selectTimeSlot('10:00')" class="time-slot p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium">10:00 AM - 11:00 AM</span>
+                                            <span class="text-sm text-success">Available</span>
+                                        </div>
+                                    </div>
+                                    <div onclick="selectTimeSlot('14:00')" class="time-slot p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium">2:00 PM - 3:00 PM</span>
+                                            <span class="text-sm text-success">Available</span>
+                                        </div>
+                                    </div>
+                                    <div class="time-slot p-3 border border-gray-200 rounded-lg opacity-50 cursor-not-allowed">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium">4:00 PM - 5:00 PM</span>
+                                            <span class="text-sm text-danger">Conflict with Dr. Martinez</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Available Rooms</h4>
+                                <div class="space-y-2">
+                                    <div onclick="selectRoom('room-a1')" class="room-slot p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <span class="font-medium">Room A1</span>
+                                                <p class="text-sm text-gray-600">Capacity: 20 students</p>
+                                            </div>
+                                            <span class="text-sm text-success">Available</span>
+                                        </div>
+                                    </div>
+                                    <div onclick="selectRoom('room-b2')" class="room-slot p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <span class="font-medium">Room B2</span>
+                                                <p class="text-sm text-gray-600">Capacity: 15 students</p>
+                                            </div>
+                                            <span class="text-sm text-success">Available</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button onclick="prevStep(2)" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Back
+                            </button>
+                            <button onclick="nextStep(4)" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 disabled:opacity-50" disabled id="next-step-3">
+                                Next: Confirm
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Confirm -->
+                    <div id="step-4" class="step-content hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Confirm Demo Session</h3>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                            <h4 class="font-medium text-gray-900 mb-4">Session Summary</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-600">Student:</span>
+                                    <p class="font-medium" id="confirm-student">Sarah Johnson</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Academic Staff:</span>
+                                    <p class="font-medium" id="confirm-staff">Dr. Martinez</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Time:</span>
+                                    <p class="font-medium" id="confirm-time">10:00 AM - 11:00 AM</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Room:</span>
+                                    <p class="font-medium" id="confirm-room">Room A1</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button onclick="prevStep(3)" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Back
+                            </button>
+                            <button onclick="scheduleDemo()" class="px-6 py-2 bg-success text-white rounded-lg hover:bg-green-700">
+                                <i class="fas fa-check mr-2"></i>Schedule Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Detail Page -->
+            <div id="student-detail-page" class="page hidden">
+                <!-- Student Profile Header -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+                    <div class="flex items-start space-x-6">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23f59e0b'/%3E%3Ctext x='40' y='52' text-anchor='middle' fill='white' font-family='Arial' font-size='32' font-weight='bold'%3ESJ%3C/text%3E%3C/svg%3E" 
+                             alt="Student" class="w-20 h-20 rounded-full">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-4 mb-2">
+                                <h1 class="text-2xl font-bold text-gray-900">Sarah Johnson</h1>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    In Progress
+                                </span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Web Development Program</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <p class="text-sm text-gray-600">Progress</p>
+                                    <div class="flex items-center space-x-3 mt-1">
+                                        <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-success h-2 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-900">85%</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Next Session</p>
+                                    <p class="font-medium text-gray-900">React Demo - Jan 18, 2:00 PM</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Academic Staff</p>
+                                    <p class="font-medium text-gray-900">Dr. Martinez</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Actions -->
+                        <div class="flex flex-col space-y-2">
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                                <i class="fas fa-phone mr-2"></i>Call
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-envelope mr-2"></i>Message
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Escalate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Main Content -->
+                    <div class="lg:col-span-2">
+                        <!-- Tabs -->
+                        <div class="bg-white rounded-xl border border-gray-200">
+                            <div class="border-b border-gray-200">
+                                <nav class="flex space-x-8 px-6">
+                                    <button onclick="switchStudentTab('overview')" class="student-detail-tab active py-4 px-1 border-b-2 border-primary text-primary font-medium text-sm">
+                                        Overview
+                                    </button>
+                                    <button onclick="switchStudentTab('tests')" class="student-detail-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm">
+                                        Tests
+                                    </button>
+                                    <button onclick="switchStudentTab('attendance')" class="student-detail-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm">
+                                        Attendance
+                                    </button>
+                                    <button onclick="switchStudentTab('notes')" class="student-detail-tab py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm">
+                                        Notes
+                                    </button>
+                                </nav>
+                            </div>
+
+                            <!-- Tab Content -->
+                            <div class="p-6">
+                                <!-- Overview Tab -->
+                                <div id="student-tab-overview" class="student-tab-content">
+                                    <div class="space-y-6">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Learning Progress</h3>
+                                            <div class="space-y-4">
+                                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-check text-white text-sm"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-medium text-gray-900">HTML & CSS Fundamentals</p>
+                                                            <p class="text-sm text-gray-600">Completed on Dec 15, 2023</p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-sm font-medium text-success">100%</span>
+                                                </div>
+                                                
+                                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="w-8 h-8 bg-success rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-check text-white text-sm"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-medium text-gray-900">JavaScript Basics</p>
+                                                            <p class="text-sm text-gray-600">Completed on Jan 15, 2024</p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-sm font-medium text-success">100%</span>
+                                                </div>
+                                                
+                                                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg border-l-4 border-primary">
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-play text-white text-sm"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-medium text-gray-900">React Components</p>
+                                                            <p class="text-sm text-gray-600">In progress - Demo scheduled Jan 18</p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-sm font-medium text-primary">70%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                                            <div class="space-y-3">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-2 h-2 bg-success rounded-full mt-2"></div>
+                                                    <div>
+                                                        <p class="text-sm text-gray-900">Passed JavaScript Fundamentals Test</p>
+                                                        <p class="text-xs text-gray-500">Jan 15, 2024 - Score: 92/100</p>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-2 h-2 bg-primary rounded-full mt-2"></div>
+                                                    <div>
+                                                        <p class="text-sm text-gray-900">Attended React Introduction Session</p>
+                                                        <p class="text-xs text-gray-500">Jan 12, 2024</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tests Tab -->
+                                <div id="student-tab-tests" class="student-tab-content hidden">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                            <div>
+                                                <p class="font-medium text-gray-900">JavaScript Fundamentals</p>
+                                                <p class="text-sm text-gray-600">January 15, 2024</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    92/100
+                                                </span>
+                                                <p class="text-xs text-gray-500 mt-1">Passed</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                            <div>
+                                                <p class="font-medium text-gray-900">HTML & CSS Basics</p>
+                                                <p class="text-sm text-gray-600">January 8, 2024</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    88/100
+                                                </span>
+                                                <p class="text-xs text-gray-500 mt-1">Passed</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Attendance Tab -->
+                                <div id="student-tab-attendance" class="student-tab-content hidden">
+                                    <div class="mb-4">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">January 2024</h3>
+                                        <p class="text-sm text-gray-600">Attendance Rate: 95% (19/20 sessions)</p>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-7 gap-2 mb-4">
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Mon</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Tue</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Wed</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Thu</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Fri</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Sat</div>
+                                        <div class="text-center text-xs font-medium text-gray-500 py-2">Sun</div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-7 gap-2">
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">1</div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">6</div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">7</div>
+                                        
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">13</div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">14</div>
+                                        
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-danger text-white rounded">
+                                            <i class="fas fa-times text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm bg-success text-white rounded">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">20</div>
+                                        <div class="aspect-square flex items-center justify-center text-sm text-gray-400">21</div>
+                                    </div>
+                                </div>
+
+                                <!-- Notes Tab -->
+                                <div id="student-tab-notes" class="student-tab-content hidden">
+                                    <div class="space-y-4">
+                                        <div class="border-l-4 border-primary pl-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <p class="font-medium text-gray-900">Dr. Martinez</p>
+                                                <p class="text-sm text-gray-500">January 15, 2024</p>
+                                            </div>
+                                            <p class="text-sm text-gray-700">Excellent performance on JavaScript test. Shows strong understanding of concepts and problem-solving skills. Ready to move to React components.</p>
+                                        </div>
+                                        
+                                        <div class="border-l-4 border-accent pl-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <p class="font-medium text-gray-900">Prof. Johnson</p>
+                                                <p class="text-sm text-gray-500">January 10, 2024</p>
+                                            </div>
+                                            <p class="text-sm text-gray-700">Participated actively in group discussions. Asks thoughtful questions and helps other students understand difficult concepts.</p>
+                                        </div>
+                                        
+                                        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                                            <h4 class="font-medium text-gray-900 mb-3">Add New Note</h4>
+                                            <textarea placeholder="Enter your note about this student..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" rows="3"></textarea>
+                                            <button class="mt-3 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 text-sm">
+                                                <i class="fas fa-plus mr-2"></i>Add Note
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Contact Information -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-envelope text-gray-400 w-4"></i>
+                                    <span class="text-gray-700">sarah.j@email.com</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-phone text-gray-400 w-4"></i>
+                                    <span class="text-gray-700">+1 (555) 123-4567</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-map-marker-alt text-gray-400 w-4"></i>
+                                    <span class="text-gray-700">123 Main St, City, State</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-2">Emergency Contact</h4>
+                                <div class="space-y-2 text-sm">
+                                    <p class="text-gray-700">Jane Johnson (Mother)</p>
+                                    <p class="text-gray-600">+1 (555) 987-6543</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Program Details -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Program Details</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Program:</span>
+                                    <span class="font-medium text-gray-900">Web Development</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Start Date:</span>
+                                    <span class="font-medium text-gray-900">Sep 15, 2023</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Expected Completion:</span>
+                                    <span class="font-medium text-gray-900">Mar 15, 2024</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Status:</span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Active
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Score Entry Modal -->
+    <div id="score-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Record Score</h3>
+                <button onclick="closeModal('score-modal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="handleScoreSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Student</label>
+                    <input type="text" id="score-student" readonly class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Score (0-100)</label>
+                    <input type="number" id="score-input" min="0" max="100" placeholder="Enter score" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+                
+                <div id="pass-fail-indicator" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Result</label>
+                    <div id="result-badge" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"></div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeModal('score-modal')" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
+                        Save Score
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedStudent = null;
+        let selectedStaff = null;
+        let selectedTime = null;
+        let selectedRoom = null;
+
+        // Page Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageName + '-page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('active');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active', 'text-primary', 'bg-blue-50');
+                item.classList.add('text-gray-700');
+            });
+            
+            // Find and highlight the clicked navigation item
+            const clickedItem = event ? event.target.closest('.nav-item') : null;
+            if (clickedItem) {
+                clickedItem.classList.add('active', 'text-primary', 'bg-blue-50');
+                clickedItem.classList.remove('text-gray-700');
+            }
+        }
+
+        // Demo Scheduling Steps
+        function nextStep(step) {
+            // Hide current step
+            document.getElementById(`step-${currentStep}`).classList.add('hidden');
+            
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                if (index + 1 < step) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                } else if (index + 1 === step) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                }
+            });
+            
+            // Show new step
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+            currentStep = step;
+        }
+
+        function prevStep(step) {
+            nextStep(step);
+        }
+
+        function selectStudent(studentId) {
+            // Remove previous selection
+            document.querySelectorAll('.student-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            
+            // Add selection to clicked card
+            event.currentTarget.classList.add('border-primary', 'bg-blue-50');
+            event.currentTarget.classList.remove('border-gray-200');
+            
+            selectedStudent = studentId;
+            document.getElementById('next-step-1').disabled = false;
+        }
+
+        function selectStaff(staffId) {
+            // Remove previous selection
+            document.querySelectorAll('.staff-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            
+            // Add selection to clicked card
+            event.currentTarget.classList.add('border-primary', 'bg-blue-50');
+            event.currentTarget.classList.remove('border-gray-200');
+            
+            selectedStaff = staffId;
+            document.getElementById('next-step-2').disabled = false;
+        }
+
+        function selectTimeSlot(time) {
+            // Remove previous selection
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('border-primary', 'bg-blue-50');
+                slot.classList.add('border-gray-200');
+            });
+            
+            // Add selection to clicked slot
+            event.currentTarget.classList.add('border-primary', 'bg-blue-50');
+            event.currentTarget.classList.remove('border-gray-200');
+            
+            selectedTime = time;
+            checkStep3Complete();
+        }
+
+        function selectRoom(roomId) {
+            // Remove previous selection
+            document.querySelectorAll('.room-slot').forEach(slot => {
+                slot.classList.remove('border-primary', 'bg-blue-50');
+                slot.classList.add('border-gray-200');
+            });
+            
+            // Add selection to clicked slot
+            event.currentTarget.classList.add('border-primary', 'bg-blue-50');
+            event.currentTarget.classList.remove('border-gray-200');
+            
+            selectedRoom = roomId;
+            checkStep3Complete();
+        }
+
+        function checkStep3Complete() {
+            if (selectedTime && selectedRoom) {
+                document.getElementById('next-step-3').disabled = false;
+            }
+        }
+
+        function scheduleDemo() {
+            alert('Demo session scheduled successfully!');
+            // Reset form and go back to step 1
+            currentStep = 1;
+            selectedStudent = null;
+            selectedStaff = null;
+            selectedTime = null;
+            selectedRoom = null;
+            
+            // Reset UI
+            document.querySelectorAll('.step-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('step-1').classList.remove('hidden');
+            
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                if (index === 0) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Student Detail Tabs
+        function switchStudentTab(tabName) {
+            // Update tab buttons with slide animation
+            document.querySelectorAll('.student-detail-tab').forEach(tab => {
+                tab.classList.remove('active', 'border-primary', 'text-primary');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            event.target.classList.add('active', 'border-primary', 'text-primary');
+            event.target.classList.remove('border-transparent', 'text-gray-500');
+            
+            // Update tab content with animation
+            document.querySelectorAll('.student-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            const targetContent = document.getElementById('student-tab-' + tabName);
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('slide-enter');
+            
+            setTimeout(() => {
+                targetContent.classList.remove('slide-enter');
+                targetContent.classList.add('slide-enter-active');
+            }, 10);
+        }
+
+        // Score Management
+        function editScore(element, studentId) {
+            const modal = document.getElementById('score-modal');
+            const studentInput = document.getElementById('score-student');
+            const scoreInput = document.getElementById('score-input');
+            
+            // Set student name
+            const studentNames = {
+                'sarah-johnson': 'Sarah Johnson',
+                'mike-chen': 'Mike Chen',
+                'emma-davis': 'Emma Davis'
+            };
+            
+            studentInput.value = studentNames[studentId] || studentId;
+            
+            // Clear previous score
+            scoreInput.value = '';
+            document.getElementById('pass-fail-indicator').classList.add('hidden');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function openScoreModal() {
+            const modal = document.getElementById('score-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleScoreSubmit(event) {
+            event.preventDefault();
+            const score = document.getElementById('score-input').value;
+            
+            if (score) {
+                alert(`Score ${score}/100 recorded successfully!`);
+                closeModal('score-modal');
+            }
+        }
+
+        // Auto-update pass/fail indicator
+        document.getElementById('score-input').addEventListener('input', function() {
+            const score = parseInt(this.value);
+            const indicator = document.getElementById('pass-fail-indicator');
+            const badge = document.getElementById('result-badge');
+            
+            if (score >= 0 && score <= 100) {
+                indicator.classList.remove('hidden');
+                
+                if (score >= 70) {
+                    badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
+                    badge.textContent = 'Pass';
+                } else {
+                    badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
+                    badge.textContent = 'Fail';
+                }
+            } else {
+                indicator.classList.add('hidden');
+            }
+        });
+
+        function addNote(studentId) {
+            alert('Note functionality would open here');
+        }
+
+        // Role Switcher Dropdown Functions
+        function toggleRoleDropdown() {
+            const dropdown = document.getElementById('role-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function switchRole(role, url) {
+            // Close dropdown
+            document.getElementById('role-dropdown').classList.add('hidden');
+            
+            // Show loading indicator
+            const button = document.querySelector('[onclick="toggleRoleDropdown()"]');
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Switching...';
+            button.disabled = true;
+            
+            // Simulate loading and redirect
+            setTimeout(() => {
+                window.location.href = url;
+            }, 500);
+        }
+
+        // Close role dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const roleDropdown = document.getElementById('role-dropdown');
+            const roleButton = document.querySelector('[onclick="toggleRoleDropdown()"]');
+            
+            if (!roleButton.contains(event.target) && !roleDropdown.contains(event.target)) {
+                roleDropdown.classList.add('hidden');
+            }
+        });
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const modals = ['score-modal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9830122ca582043f',t:'MTc1ODUyNTk1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

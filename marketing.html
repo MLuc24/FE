@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduCRM - Education CRM Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-collapsed { width: 4rem; }
+        .sidebar-expanded { width: 16rem; }
+        .main-content-collapsed { margin-left: 4rem; }
+        .main-content-expanded { margin-left: 16rem; }
+        .chart-container { position: relative; height: 300px; }
+        .mobile-sidebar { transform: translateX(-100%); }
+        .mobile-sidebar.open { transform: translateX(0); }
+        
+        .tab-active {
+            border-bottom: 2px solid #3B82F6;
+            color: #3B82F6;
+        }
+        
+        .tab-inactive {
+            border-bottom: 2px solid transparent;
+            color: #6B7280;
+        }
+        
+        .tab-inactive:hover {
+            color: #374151;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #E5E7EB;
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content-collapsed, .main-content-expanded { margin-left: 0; }
+            .sidebar-expanded, .sidebar-collapsed { width: 16rem; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 h-16">
+        <div class="flex items-center justify-between h-full px-4">
+            <!-- Left: Logo + Menu Toggle -->
+            <div class="flex items-center space-x-4">
+                <button id="menuToggle" class="p-2 rounded-lg hover:bg-gray-100 md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <button id="sidebarToggle" class="p-2 rounded-lg hover:bg-gray-100 hidden md:block">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.84L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.84l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900 hidden sm:block">EduCRM</span>
+                </div>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="flex-1 max-w-2xl mx-4 hidden md:block">
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" placeholder="Search leads, contacts, campaigns..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="flex items-center space-x-3">
+                <button class="p-2 rounded-lg hover:bg-gray-100 relative">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7h6m0 10v-3m-3-4h.01M9 17h.01M9 14h.01M9 11h.01"></path>
+                    </svg>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                </button>
+                <button class="p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+                <div class="relative">
+                    <button id="userMenu" class="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">JD</span>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                        <div class="py-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account</a>
+                            <hr class="my-1">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-16 h-full bg-white border-r border-gray-200 z-40 sidebar-expanded transition-all duration-300 md:translate-x-0 mobile-sidebar">
+        <nav class="p-4 space-y-2">
+            <a href="#" onclick="showScreen('dashboard')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" onclick="showScreen('campaigns')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                </svg>
+                <span class="nav-text">Campaigns</span>
+            </a>
+            <a href="#" onclick="showScreen('campaignDetail')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 bg-blue-50 text-blue-700">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clip-rule="evenodd"/>
+                </svg>
+                <span class="nav-text">Campaign Detail</span>
+            </a>
+            <a href="#" onclick="showScreen('leadScoring')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                </svg>
+                <span class="nav-text">Lead Scoring</span>
+            </a>
+            <a href="#" onclick="showScreen('roiReports')" class="nav-item flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                </svg>
+                <span class="nav-text">ROI Reports</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="main-content-expanded pt-16 min-h-screen transition-all duration-300">
+        
+        <!-- Campaign Detail Screen -->
+        <div id="campaignDetailScreen" class="screen p-6">
+            <!-- Header Section -->
+            <div class="mb-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+                    <div class="flex items-center space-x-4 mb-4 lg:mb-0">
+                        <button onclick="showScreen('campaigns')" class="p-2 rounded-lg hover:bg-gray-100">
+                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Summer Enrollment Drive</h1>
+                            <div class="flex items-center space-x-3 mt-1">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Google Ads
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Edit Campaign
+                        </button>
+                        <button class="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors">
+                            Pause
+                        </button>
+                        <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            Duplicate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-sm text-gray-600 mb-1">Budget vs Spent</h3>
+                    <div class="text-2xl font-bold text-gray-900">$3,240 / $5,000</div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">-8%</span>
+                    </div>
+                    <h3 class="text-sm text-gray-600 mb-1">Cost Per Lead</h3>
+                    <div class="text-2xl font-bold text-gray-900">$23.50</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">+12%</span>
+                    </div>
+                    <h3 class="text-sm text-gray-600 mb-1">Conversion Rate</h3>
+                    <div class="text-2xl font-bold text-gray-900">18.5%</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">+24%</span>
+                    </div>
+                    <h3 class="text-sm text-gray-600 mb-1">Leads Generated</h3>
+                    <div class="text-2xl font-bold text-gray-900">138</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="bg-white rounded-lg border border-gray-200">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6">
+                        <button onclick="switchTab('overview')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm tab-active" data-tab="overview">
+                            Overview
+                        </button>
+                        <button onclick="switchTab('performance')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm tab-inactive" data-tab="performance">
+                            Performance
+                        </button>
+                        <button onclick="switchTab('audience')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm tab-inactive" data-tab="audience">
+                            Audience
+                        </button>
+                        <button onclick="switchTab('assets')" class="tab-button py-4 px-1 border-b-2 font-medium text-sm tab-inactive" data-tab="assets">
+                            Assets
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="tab-content p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Campaign Timeline</h3>
+                    <div class="space-y-6">
+                        <div class="timeline-item relative pl-10">
+                            <div class="absolute left-0 top-1 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Campaign Launch</h4>
+                                <p class="text-sm text-gray-600">June 1, 2024 • Campaign went live with initial budget of $5,000</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pl-10">
+                            <div class="absolute left-0 top-1 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Mid-Campaign Optimization</h4>
+                                <p class="text-sm text-gray-600">June 15, 2024 • Adjusted targeting and increased bid for high-performing keywords</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item relative pl-10">
+                            <div class="absolute left-0 top-1 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Campaign End</h4>
+                                <p class="text-sm text-gray-600">July 31, 2024 • Scheduled campaign completion</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Tab -->
+                <div id="performanceTab" class="tab-content p-6 hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Daily Spend vs Leads</h3>
+                            <div class="chart-container">
+                                <canvas id="dailyPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">CPL by Ad Group</h3>
+                            <div class="chart-container">
+                                <canvas id="cplChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audience Tab -->
+                <div id="audienceTab" class="tab-content p-6 hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-900 mb-4">Age Distribution</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">18-24</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-3/4 h-2 bg-blue-600 rounded-full"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">35%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">25-34</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-full h-2 bg-blue-600 rounded-full"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">42%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">35-44</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-1/2 h-2 bg-blue-600 rounded-full"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">23%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-900 mb-4">Gender</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Female</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-3/5 h-2 bg-teal-600 rounded-full"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">58%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Male</span>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-20 h-2 bg-gray-200 rounded-full">
+                                            <div class="w-2/5 h-2 bg-teal-600 rounded-full"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">42%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-gray-900 mb-4">Top Locations</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">New York</span>
+                                    <span class="text-sm font-medium">28%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">California</span>
+                                    <span class="text-sm font-medium">22%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Texas</span>
+                                    <span class="text-sm font-medium">18%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Florida</span>
+                                    <span class="text-sm font-medium">15%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assets Tab -->
+                <div id="assetsTab" class="tab-content p-6 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="w-full h-32 bg-gradient-to-r from-blue-500 to-teal-500 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white font-medium">Ad Creative 1</span>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Summer Program Banner</h4>
+                            <p class="text-sm text-gray-600 mb-3">1200x628 • JPG • 245KB</p>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button>
+                                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">Download</button>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="w-full h-32 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white font-medium">Ad Creative 2</span>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Course Highlight Video</h4>
+                            <p class="text-sm text-gray-600 mb-3">1920x1080 • MP4 • 2.1MB</p>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button>
+                                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">Download</button>
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="w-full h-32 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg mb-4 flex items-center justify-center">
+                                <span class="text-white font-medium">Ad Creative 3</span>
+                            </div>
+                            <h4 class="font-medium text-gray-900 mb-2">Student Success Story</h4>
+                            <p class="text-sm text-gray-600 mb-3">1080x1080 • PNG • 892KB</p>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</button>
+                                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lead Scoring Screen -->
+        <div id="leadScoringScreen" class="screen p-6 hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Lead Scoring & Quality</h1>
+                <p class="text-gray-600">Analyze and score your leads based on behavior and demographics</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                <div class="flex flex-wrap gap-4">
+                    <select class="border border-gray-300 rounded-lg px-3 py-2">
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                        <option>This year</option>
+                    </select>
+                    <select class="border border-gray-300 rounded-lg px-3 py-2">
+                        <option>All Sources</option>
+                        <option>Google Ads</option>
+                        <option>SEO</option>
+                        <option>Events</option>
+                        <option>Referrals</option>
+                    </select>
+                    <select class="border border-gray-300 rounded-lg px-3 py-2">
+                        <option>All Campaigns</option>
+                        <option>Summer Enrollment</option>
+                        <option>SEO Content</option>
+                        <option>Workshop Series</option>
+                    </select>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Run Scoring
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Lead Quality Funnel -->
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-6">Lead Quality Funnel</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-gray-400 rounded"></div>
+                                    <span class="text-gray-700">Visitors</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-gray-900">12,450</div>
+                                    <div class="w-32 h-2 bg-gray-200 rounded-full">
+                                        <div class="w-full h-2 bg-gray-400 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                                    <span class="text-gray-700">Leads</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-gray-900">1,247</div>
+                                    <div class="w-32 h-2 bg-gray-200 rounded-full">
+                                        <div class="w-3/4 h-2 bg-blue-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-teal-500 rounded"></div>
+                                    <span class="text-gray-700">MQLs</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-gray-900">431</div>
+                                    <div class="w-32 h-2 bg-gray-200 rounded-full">
+                                        <div class="w-1/2 h-2 bg-teal-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                                    <span class="text-gray-700">SQLs</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-gray-900">89</div>
+                                    <div class="w-32 h-2 bg-gray-200 rounded-full">
+                                        <div class="w-1/4 h-2 bg-green-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leads Table -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-900">Lead Scores</h3>
+                                <div class="flex space-x-2">
+                                    <button class="text-sm text-gray-600 hover:text-gray-900">Assign Owner</button>
+                                    <button class="text-sm text-gray-600 hover:text-gray-900">Change Status</button>
+                                    <button class="text-sm text-gray-600 hover:text-gray-900">Export</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <input type="checkbox" class="rounded border-gray-300">
+                                        </th>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Lead ID</th>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
+                                        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4">
+                                            <input type="checkbox" class="rounded border-gray-300">
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">LD-2024-001</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Google Ads
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-lg font-bold text-green-600">85</span>
+                                                <span class="text-xs text-gray-500">Hot</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">Sarah Chen</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                                                MQL
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4">
+                                            <input type="checkbox" class="rounded border-gray-300">
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">LD-2024-002</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                SEO
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-lg font-bold text-amber-600">67</span>
+                                                <span class="text-xs text-gray-500">Warm</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">Mike Johnson</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Lead
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4">
+                                            <input type="checkbox" class="rounded border-gray-300">
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">LD-2024-003</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                                Event
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-lg font-bold text-red-600">32</span>
+                                                <span class="text-xs text-gray-500">Cold</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Unassigned</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                New
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scoring Widget Sidebar -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Scoring Criteria</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-medium text-gray-700">Behavior</label>
+                                    <span class="text-sm text-gray-500">40%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-medium text-gray-700">Demographics</label>
+                                    <span class="text-sm text-gray-500">35%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="35" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-medium text-gray-700">Channel</label>
+                                    <span class="text-sm text-gray-500">25%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-6">
+                            Update Scoring
+                        </button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Score Distribution</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-700">Hot (80-100)</span>
+                                </div>
+                                <span class="text-sm font-medium">23</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-700">Warm (60-79)</span>
+                                </div>
+                                <span class="text-sm font-medium">67</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-700">Cold (0-59)</span>
+                                </div>
+                                <span class="text-sm font-medium">142</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI Reports Screen -->
+        <div id="roiReportsScreen" class="screen p-6 hidden">
+            <div class="mb-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2">ROI Reports</h1>
+                        <p class="text-gray-600">Analyze return on investment across all marketing channels</p>
+                    </div>
+                    <div class="flex space-x-3 mt-4 lg:mt-0">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Export PDF
+                        </button>
+                        <button class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROI Summary -->
+            <div class="bg-gradient-to-r from-blue-600 to-teal-600 p-6 rounded-lg text-white mb-8">
+                <h2 class="text-xl font-semibold mb-4">Q2 2024 ROI Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <div class="text-2xl font-bold">$45,230</div>
+                        <div class="text-blue-100">Total Spend</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">$128,940</div>
+                        <div class="text-blue-100">Total Revenue</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">285%</div>
+                        <div class="text-blue-100">ROI</div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <div>
+                            <div class="text-lg font-bold">SEO</div>
+                            <div class="text-blue-100 text-sm">Best Channel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">ROI by Channel</h3>
+                    <div class="chart-container">
+                        <canvas id="roiChannelChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Cost vs Revenue Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="costRevenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breakdown Table -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Channel Performance Breakdown</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Spend</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">ROI %</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Leads</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        <span class="font-medium text-gray-900">SEO</span>
+                                        <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">$8,450</td>
+                                <td class="px-6 py-4 text-gray-900">$42,300</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        401%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">487</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-green-600">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm font-medium">+24%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                        <span class="font-medium text-gray-900">Google Ads</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">$18,200</td>
+                                <td class="px-6 py-4 text-gray-900">$51,840</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        285%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">324</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-green-600">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm font-medium">+12%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                        <span class="font-medium text-gray-900">Facebook Ads</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">$12,800</td>
+                                <td class="px-6 py-4 text-gray-900">$25,600</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                        200%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">298</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-red-600">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm font-medium">-8%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                        <span class="font-medium text-gray-900">Events</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">$5,780</td>
+                                <td class="px-6 py-4 text-gray-900">$9,200</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                        159%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">156</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-green-600">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm font-medium">+5%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen (from Version 1) -->
+        <div id="dashboardScreen" class="screen p-6 hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Marketing Dashboard</h1>
+                <p class="text-gray-600">Track your marketing performance and lead generation</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">+12%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-1">1,247</h3>
+                    <p class="text-gray-600 text-sm">Leads Generated</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-red-600 font-medium">-3%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-1">$24.50</h3>
+                    <p class="text-gray-600 text-sm">Cost Per Lead</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">+8%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-1">18.5%</h3>
+                    <p class="text-gray-600 text-sm">Conversion Rate</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-green-600 font-medium">+15%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-1">285%</h3>
+                    <p class="text-gray-600 text-sm">ROI</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="showScreen('campaignDetail')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        View Campaign Details
+                    </button>
+                    <button onclick="showScreen('leadScoring')" class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors">
+                        Score Leads
+                    </button>
+                    <button onclick="showScreen('roiReports')" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        View ROI Reports
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns Screen (from Version 1) -->
+        <div id="campaignsScreen" class="screen p-6 hidden">
+            <div class="mb-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2">Campaigns</h1>
+                        <p class="text-gray-600">Manage your marketing campaigns</p>
+                    </div>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-4 sm:mt-0">
+                        Create Campaign
+                    </button>
+                </div>
+            </div>
+
+            <!-- Campaigns Table -->
+            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign Name</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Channel</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">CPL</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50 cursor-pointer" onclick="showScreen('campaignDetail')">
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">Summer Enrollment Drive</div>
+                                    <div class="text-sm text-gray-500">Started Jun 1, 2024</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        Google Ads
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-900">$5,000</td>
+                                <td class="px-6 py-4 text-gray-900">$23.50</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Active
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <button class="text-blue-600 hover:text-blue-900 text-sm font-medium">View Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+    <script>
+        // Navigation and UI interactions
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const userMenu = document.getElementById('userMenu');
+        const userDropdown = document.getElementById('userDropdown');
+
+        let sidebarExpanded = true;
+
+        // Desktop sidebar toggle
+        sidebarToggle.addEventListener('click', () => {
+            sidebarExpanded = !sidebarExpanded;
+            if (sidebarExpanded) {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+                mainContent.classList.remove('main-content-collapsed');
+                mainContent.classList.add('main-content-expanded');
+                document.querySelectorAll('.nav-text').forEach(el => el.classList.remove('hidden'));
+            } else {
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+                mainContent.classList.remove('main-content-expanded');
+                mainContent.classList.add('main-content-collapsed');
+                document.querySelectorAll('.nav-text').forEach(el => el.classList.add('hidden'));
+            }
+        });
+
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            mobileOverlay.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking overlay
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            mobileOverlay.classList.add('hidden');
+        });
+
+        // User dropdown toggle
+        userMenu.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenu.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Screen navigation
+        function showScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenName + 'Screen').classList.remove('hidden');
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-blue-50', 'text-blue-700');
+                item.classList.add('text-gray-700');
+            });
+            
+            // Set active nav item based on screen
+            const navMap = {
+                'dashboard': 0,
+                'campaigns': 1,
+                'campaignDetail': 2,
+                'leadScoring': 3,
+                'roiReports': 4
+            };
+            
+            const activeIndex = navMap[screenName];
+            if (activeIndex !== undefined) {
+                const navItems = document.querySelectorAll('.nav-item');
+                if (navItems[activeIndex]) {
+                    navItems[activeIndex].classList.add('bg-blue-50', 'text-blue-700');
+                    navItems[activeIndex].classList.remove('text-gray-700');
+                }
+            }
+            
+            // Close mobile menu
+            sidebar.classList.remove('open');
+            mobileOverlay.classList.add('hidden');
+        }
+
+        // Tab switching for Campaign Detail
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('tab-active');
+                button.classList.add('tab-inactive');
+            });
+            
+            // Set active tab button
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('tab-inactive');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('tab-active');
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // Daily Performance Chart
+            const dailyCtx = document.getElementById('dailyPerformanceChart');
+            if (dailyCtx) {
+                new Chart(dailyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jun 1', 'Jun 5', 'Jun 10', 'Jun 15', 'Jun 20', 'Jun 25', 'Jun 30'],
+                        datasets: [{
+                            label: 'Daily Spend',
+                            data: [120, 150, 180, 200, 175, 190, 210],
+                            borderColor: '#EF4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            yAxisID: 'y'
+                        }, {
+                            label: 'Leads',
+                            data: [5, 7, 8, 9, 7, 8, 10],
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            }
+                        }
+                    }
+                });
+            }
+
+            // CPL Chart
+            const cplCtx = document.getElementById('cplChart');
+            if (cplCtx) {
+                new Chart(cplCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Ad Group 1', 'Ad Group 2', 'Ad Group 3', 'Ad Group 4'],
+                        datasets: [{
+                            label: 'Cost Per Lead',
+                            data: [23.50, 18.20, 31.40, 26.80],
+                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // ROI Channel Chart
+            const roiChannelCtx = document.getElementById('roiChannelChart');
+            if (roiChannelCtx) {
+                new Chart(roiChannelCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['SEO', 'Google Ads', 'Facebook Ads', 'Events'],
+                        datasets: [{
+                            label: 'ROI %',
+                            data: [401, 285, 200, 159],
+                            backgroundColor: ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B'],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Cost vs Revenue Chart
+            const costRevenueCtx = document.getElementById('costRevenueChart');
+            if (costRevenueCtx) {
+                new Chart(costRevenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Apr', 'May', 'Jun', 'Jul'],
+                        datasets: [{
+                            label: 'Cost',
+                            data: [12000, 15000, 18000, 14500],
+                            borderColor: '#EF4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            fill: false
+                        }, {
+                            label: 'Revenue',
+                            data: [28000, 35000, 42000, 38500],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            // Show campaign detail by default
+            showScreen('campaignDetail');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982f550747e9b467',t:'MTc1ODUxODIwNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

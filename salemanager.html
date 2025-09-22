@@ -6,6 +6,7 @@
     <title>Edu CRM - Sales Manager Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -65,6 +66,78 @@
                 </div>
             </div>
 
+            <!-- Role Switcher Dropdown -->
+            <div class="relative">
+                <button id="role-dropdown-btn" onclick="toggleRoleDropdown()" 
+                        class="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
+                    <div class="w-4 h-4 bg-purple-600 rounded flex items-center justify-center">
+                        <i class="fas fa-users-cog text-white text-xs"></i>
+                    </div>
+                    <span id="current-role">Sales Manager</span>
+                    <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="role-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div class="py-2">
+                        <div class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                            Switch Role
+                        </div>
+                        <a href="index.html" onclick="switchRole('Sales', 'index.html')" 
+                           class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-handshake text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Sales Dashboard</div>
+                                <div class="text-xs text-gray-500">Lead management & sales</div>
+                            </div>
+                        </a>
+                        <a href="academic.html" onclick="switchRole('Academic', 'academic.html')" 
+                           class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-graduation-cap text-green-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Academic Portal</div>
+                                <div class="text-xs text-gray-500">Student & course management</div>
+                            </div>
+                        </a>
+                        <a href="marketing.html" onclick="switchRole('Marketing', 'marketing.html')" 
+                           class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bullhorn text-pink-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Marketing Hub</div>
+                                <div class="text-xs text-gray-500">Campaigns & analytics</div>
+                            </div>
+                        </a>
+                        <a href="salemanager.html" onclick="switchRole('Sales Manager', 'salemanager.html')" 
+                           class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-white bg-purple-50 border-l-4 border-purple-500">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users-cog text-purple-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Sales Manager</div>
+                                <div class="text-xs text-gray-500">Team & pipeline management</div>
+                            </div>
+                            <i class="fas fa-check text-purple-600 ml-auto"></i>
+                        </a>
+                        <a href="a1.html" onclick="switchRole('A1 Class', 'a1.html')" 
+                           class="role-item flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chalkboard-teacher text-orange-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">A1 Class Management</div>
+                                <div class="text-xs text-gray-500">Class administration</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Right Icons -->
             <div class="flex items-center space-x-4">
                 <button class="p-2 rounded-lg hover:bg-gray-100 relative">
@@ -114,11 +187,23 @@
                     </svg>
                     <span class="sidebar-text">Pipeline</span>
                 </button>
+                <button onclick="showPage('forecasting')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <i class="fas fa-chart-line w-5 h-5"></i>
+                    <span class="sidebar-text">Sales Forecasting</span>
+                </button>
+                <button onclick="showPage('team')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <i class="fas fa-users w-5 h-5"></i>
+                    <span class="sidebar-text">Team Management</span>
+                </button>
                 <button onclick="showPage('coaching')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                     </svg>
                     <span class="sidebar-text">Coaching</span>
+                </button>
+                <button onclick="showPage('training')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <i class="fas fa-graduation-cap w-5 h-5"></i>
+                    <span class="sidebar-text">Training & Development</span>
                 </button>
                 <button onclick="showPage('approvals')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1070,6 +1155,622 @@
                 </div>
             </div>
         </div>
+
+        <!-- Team Management Page -->
+        <div id="teamPage" class="page-content p-6 hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Team Management</h1>
+                <p class="text-gray-600">Manage your sales team and track individual performance</p>
+            </div>
+
+            <!-- Team Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Team Members</p>
+                            <p class="text-2xl font-bold text-gray-900">8</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Average Performance</p>
+                            <p class="text-2xl font-bold text-gray-900">87%</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Top Performer</p>
+                            <p class="text-lg font-bold text-gray-900">Nguyen Van A</p>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-trophy text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Team Target</p>
+                            <p class="text-2xl font-bold text-gray-900">₫2.5B</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-target text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members List -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Team Members</h3>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Member
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Team Member</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Role</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Target</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Achievement</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Performance</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Status</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23059669'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ENA%3C/text%3E%3C/svg%3E" 
+                                             alt="Avatar" class="w-10 h-10 rounded-full">
+                                        <div>
+                                            <div class="font-medium text-gray-900">Nguyen Van A</div>
+                                            <div class="text-sm text-gray-500">nguyen.a@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Senior Sales Rep</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫400M</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫485M</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-20">
+                                            <div class="bg-green-600 h-2 rounded-full" style="width: 121%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-green-600">121%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                        Excellent
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-2 text-gray-600 hover:text-blue-600">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-green-600">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-purple-600">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23DC2626'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                             alt="Avatar" class="w-10 h-10 rounded-full">
+                                        <div>
+                                            <div class="font-medium text-gray-900">Tran Thi B</div>
+                                            <div class="text-sm text-gray-500">tran.b@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Sales Representative</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫300M</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫195M</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-20">
+                                            <div class="bg-orange-600 h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-orange-600">65%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                        Needs Support
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-2 text-gray-600 hover:text-blue-600">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-green-600">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-purple-600">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%237C3AED'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-family='Arial' font-size='16' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                             alt="Avatar" class="w-10 h-10 rounded-full">
+                                        <div>
+                                            <div class="font-medium text-gray-900">Le Van C</div>
+                                            <div class="text-sm text-gray-500">le.c@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Junior Sales Rep</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫200M</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫176M</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-20">
+                                            <div class="bg-blue-600 h-2 rounded-full" style="width: 88%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-blue-600">88%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                        Good
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center space-x-2">
+                                        <button class="p-2 text-gray-600 hover:text-blue-600">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-green-600">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="p-2 text-gray-600 hover:text-purple-600">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Forecasting Page -->
+        <div id="forecastingPage" class="page-content p-6 hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Sales Forecasting</h1>
+                <p class="text-gray-600">Revenue predictions and deal probability analysis</p>
+            </div>
+
+            <!-- Forecast Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">This Quarter</h3>
+                        <i class="fas fa-chart-line text-blue-600"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Target:</span>
+                            <span class="text-sm font-medium text-gray-900">₫2.5B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Forecast:</span>
+                            <span class="text-sm font-medium text-green-600">₫2.8B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Confidence:</span>
+                            <span class="text-sm font-medium text-blue-600">85%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Next Quarter</h3>
+                        <i class="fas fa-chart-bar text-purple-600"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Projected:</span>
+                            <span class="text-sm font-medium text-gray-900">₫3.2B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Pipeline:</span>
+                            <span class="text-sm font-medium text-blue-600">₫4.1B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Probability:</span>
+                            <span class="text-sm font-medium text-orange-600">78%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Year End</h3>
+                        <i class="fas fa-calendar text-green-600"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Annual Target:</span>
+                            <span class="text-sm font-medium text-gray-900">₫12B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Forecast:</span>
+                            <span class="text-sm font-medium text-green-600">₫13.5B</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Growth:</span>
+                            <span class="text-sm font-medium text-green-600">+12.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Forecast Trend</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-placeholder h-64 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fas fa-chart-line text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">Monthly Revenue Forecast</p>
+                                <p class="text-sm text-gray-400">Target vs Projected vs Actual</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Deal Probability Analysis</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">High Probability (>80%)</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-20 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">₫1.8B</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Medium Probability (50-80%)</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-20 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">₫1.2B</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Low Probability (<50%)</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-20 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 25%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">₫800M</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Deals -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">High-Impact Deals (Next 30 Days)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Deal</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Value</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Owner</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Close Date</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Probability</th>
+                                <th class="text-left p-4 text-sm font-medium text-gray-500">Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div>
+                                        <div class="font-medium text-gray-900">Công ty Giáo dục DEF</div>
+                                        <div class="text-sm text-gray-500">Corporate Training Package</div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫120M</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Le Van C</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Oct 15, 2025</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                        85%
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                        Low
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-4">
+                                    <div>
+                                        <div class="font-medium text-gray-900">Trung tâm Anh ngữ ABC</div>
+                                        <div class="text-sm text-gray-500">IELTS Course Package</div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm font-medium text-gray-900">₫45M</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Nguyen Van A</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="text-sm text-gray-900">Oct 8, 2025</span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                        60%
+                                    </span>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                        Medium
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training & Development Page -->
+        <div id="trainingPage" class="page-content p-6 hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Training & Development</h1>
+                <p class="text-gray-600">Manage team training programs and skill development</p>
+            </div>
+
+            <!-- Training Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Active Programs</p>
+                            <p class="text-2xl font-bold text-gray-900">6</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Completion Rate</p>
+                            <p class="text-2xl font-bold text-gray-900">78%</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Hours This Month</p>
+                            <p class="text-2xl font-bold text-gray-900">124</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Certifications</p>
+                            <p class="text-2xl font-bold text-gray-900">23</p>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-certificate text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Programs -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">Current Training Programs</h3>
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add Program
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-gray-900">Advanced Sales Techniques</h4>
+                                <span class="text-sm text-green-600 bg-green-100 px-2 py-1 rounded">Active</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Master advanced closing techniques and objection handling</p>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">Progress: 65%</span>
+                                <span class="text-gray-500">5/8 participants</span>
+                            </div>
+                            <div class="mt-2 bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-gray-900">CRM Mastery Workshop</h4>
+                                <span class="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">Starting Soon</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Maximize efficiency with advanced CRM features</p>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">Starts: Oct 1, 2025</span>
+                                <span class="text-gray-500">8 registered</span>
+                            </div>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-gray-900">Customer Psychology</h4>
+                                <span class="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">Understanding customer behavior and decision-making</p>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">Completed: Sep 15, 2025</span>
+                                <span class="text-gray-500">8/8 graduated</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Individual Development Plans</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23DC2626'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                 class="w-8 h-8 rounded-full" alt="Avatar">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">Tran Thi B</div>
+                                <div class="text-sm text-gray-600">Focus: Negotiation Skills, Pipeline Management</div>
+                                <div class="text-xs text-gray-500 mt-1">Next session: Oct 5, 2025</div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%237C3AED'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                 class="w-8 h-8 rounded-full" alt="Avatar">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">Le Van C</div>
+                                <div class="text-sm text-gray-600">Focus: Presentation Skills, Client Relationship</div>
+                                <div class="text-xs text-gray-500 mt-1">Next session: Oct 3, 2025</div>
+                            </div>
+                            <button class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Calendar -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Training Calendar</h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-7 gap-1 mb-4">
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Mon</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Tue</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Wed</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Thu</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Fri</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Sat</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Sun</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1">
+                        <div class="text-center py-3 text-sm text-gray-900">30</div>
+                        <div class="text-center py-3 text-sm text-gray-900 relative">
+                            1
+                            <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                        </div>
+                        <div class="text-center py-3 text-sm text-gray-900">2</div>
+                        <div class="text-center py-3 text-sm text-gray-900 relative">
+                            3
+                            <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
+                        </div>
+                        <div class="text-center py-3 text-sm text-gray-900">4</div>
+                        <div class="text-center py-3 text-sm text-gray-900 relative">
+                            5
+                            <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-purple-500 rounded-full"></div>
+                        </div>
+                        <div class="text-center py-3 text-sm text-gray-900">6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Mobile Overlay -->
@@ -1262,6 +1963,38 @@
             card.classList.remove('border-red-200', 'bg-red-50', 'border-yellow-200', 'bg-yellow-50', 'border-blue-200', 'bg-blue-50');
             card.classList.add('border-gray-200', 'bg-gray-50');
         }
+
+        // Role Switcher Dropdown Functions
+        function toggleRoleDropdown() {
+            const dropdown = document.getElementById('role-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function switchRole(role, url) {
+            // Close dropdown
+            document.getElementById('role-dropdown').classList.add('hidden');
+            
+            // Show loading indicator
+            const button = document.querySelector('[onclick="toggleRoleDropdown()"]');
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Switching...';
+            button.disabled = true;
+            
+            // Simulate loading and redirect
+            setTimeout(() => {
+                window.location.href = url;
+            }, 500);
+        }
+
+        // Close role dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const roleDropdown = document.getElementById('role-dropdown');
+            const roleButton = document.querySelector('[onclick="toggleRoleDropdown()"]');
+            
+            if (roleButton && !roleButton.contains(event.target) && !roleDropdown.contains(event.target)) {
+                roleDropdown.classList.add('hidden');
+            }
+        });
 
         // Initialize with dashboard active
         document.addEventListener('DOMContentLoaded', function() {
