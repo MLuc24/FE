@@ -21,133 +21,137 @@
             }
         }
     </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-collapsed { width: 4rem; }
+        .main-expanded { margin-left: 4rem; }
+        .chart-placeholder { 
+            background: linear-gradient(45deg, #f3f4f6 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f3f4f6 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f3f4f6 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f3f4f6 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-inter">
+<body class="bg-gray-50">
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 h-16">
         <div class="flex items-center justify-between px-6 h-full">
             <!-- Logo -->
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <span class="text-white font-bold text-sm">E</span>
+            <div class="flex items-center space-x-4">
+                <button id="sidebarToggle" class="p-2 rounded-lg hover:bg-gray-100 lg:hidden">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">E</span>
+                    </div>
+                    <span class="font-bold text-xl text-gray-900">Edu CRM</span>
                 </div>
-                <span class="text-xl font-bold text-gray-900">Edu CRM</span>
             </div>
-            
+
             <!-- Search Bar -->
-            <div class="flex-1 max-w-md mx-8">
-                <div class="relative">
-                    <input type="text" placeholder="Search clients, deals, reports..." 
+            <div class="hidden md:flex flex-1 max-w-lg mx-8">
+                <div class="relative w-full">
+                    <input type="text" placeholder="Search students, deals, courses..." 
                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
             </div>
-            
-            <!-- Right Actions -->
+
+            <!-- Right Icons -->
             <div class="flex items-center space-x-4">
-                <button class="relative p-2 text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="p-2 rounded-lg hover:bg-gray-100 relative">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7H4l5-5v5z"></path>
                     </svg>
                     <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                 </button>
-                <button class="p-2 text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </button>
                 <div class="relative">
-                    <button onclick="toggleUserMenu()" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
-                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                            <span class="text-white text-sm font-medium">TM</span>
-                        </div>
-                        <span class="text-sm font-medium text-gray-700">Trần Minh</span>
+                    <button id="userMenu" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232563EB'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='14' font-weight='bold'%3ELM%3C/text%3E%3C/svg%3E" 
+                             alt="User Avatar" class="w-8 h-8 rounded-full">
+                        <span class="hidden md:block text-sm font-medium text-gray-700">Le Minh</span>
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-                        <hr class="my-1">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
-                    </div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 transition-transform duration-300">
-        <div class="p-4">
-            <button onclick="toggleSidebar()" class="lg:hidden mb-4 p-2 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <nav class="px-4 pb-4">
-            <!-- Shared Items -->
+    <aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-gray-200 z-40 transition-all duration-300">
+        <nav class="p-4 space-y-2">
+            <!-- Shared Navigation -->
             <div class="mb-6">
-                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">General</h3>
-                <ul class="space-y-1">
-                    <li><a href="#" onclick="showPage('dashboard')" class="nav-item active flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        </svg>
-                        Dashboard
-                    </a></li>
-                    <li><a href="#" onclick="showPage('reports')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        Reports
-                    </a></li>
-                </ul>
+                <button onclick="showPage('dashboard')" class="nav-item active w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    </svg>
+                    <span class="sidebar-text">Dashboard</span>
+                </button>
             </div>
-            
+
             <!-- Sales Manager Specific -->
-            <div>
-                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Sales Management</h3>
-                <ul class="space-y-1">
-                    <li><a href="#" onclick="showPage('pipeline')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                        Pipeline
-                    </a></li>
-                    <li><a href="#" onclick="showPage('coaching')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                        </svg>
-                        Coaching
-                    </a></li>
-                    <li><a href="#" onclick="showPage('approvals')" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Approvals
-                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
-                    </a></li>
-                    <li><a href="#" class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-lg">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        Settings
-                    </a></li>
-                </ul>
+            <div class="space-y-1">
+                <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider sidebar-text">Sales Management</h3>
+                <button onclick="showPage('pipeline')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="sidebar-text">Pipeline</span>
+                </button>
+                <button onclick="showPage('coaching')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                    <span class="sidebar-text">Coaching</span>
+                </button>
+                <button onclick="showPage('approvals')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="sidebar-text">Approvals</span>
+                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                </button>
+            </div>
+
+            <!-- Shared Bottom Items -->
+            <div class="pt-6 space-y-1">
+                <button onclick="showPage('reports')" class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="sidebar-text">Reports</span>
+                </button>
+                <button class="nav-item w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="sidebar-text">Settings</span>
+                </button>
             </div>
         </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-64 pt-16 min-h-screen">
+    <main id="mainContent" class="ml-64 pt-16 transition-all duration-300">
         <!-- Dashboard Page -->
-        <div id="dashboard-page" class="page-content p-6">
+        <div id="dashboardPage" class="page-content p-6">
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900">Team Dashboard</h1>
                 <p class="text-gray-600">Track team revenue performance quickly</p>
@@ -155,7 +159,7 @@
 
             <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Revenue vs Target</p>
@@ -164,13 +168,13 @@
                         </div>
                         <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Win Rate</p>
@@ -179,33 +183,33 @@
                         </div>
                         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Pipeline Volume</p>
-                            <p class="text-2xl font-bold text-gray-900">1.8B VND</p>
-                            <p class="text-sm text-gray-600">42 active deals</p>
+                            <p class="text-2xl font-bold text-gray-900">156</p>
+                            <p class="text-sm text-gray-500">Active deals</p>
                         </div>
                         <div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Avg Conversion Time</p>
-                            <p class="text-2xl font-bold text-gray-900">28 days</p>
-                            <p class="text-sm text-red-600">+3 days vs last month</p>
+                            <p class="text-2xl font-bold text-gray-900">18 days</p>
+                            <p class="text-sm text-red-600">+2 days vs last month</p>
                         </div>
                         <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,12 +222,12 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <!-- Funnel Visualization -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Sales Funnel</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">Leads</span>
-                            <span class="text-sm font-bold text-gray-900">245</span>
+                            <span class="text-sm font-bold text-gray-900">1,240</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
                             <div class="bg-primary h-3 rounded-full" style="width: 100%"></div>
@@ -231,57 +235,83 @@
                         
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">MQL</span>
-                            <span class="text-sm font-bold text-gray-900">156</span>
+                            <span class="text-sm font-bold text-gray-900">620</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-primary h-3 rounded-full" style="width: 64%"></div>
+                            <div class="bg-primary h-3 rounded-full" style="width: 50%"></div>
                         </div>
                         
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">Contacted</span>
-                            <span class="text-sm font-bold text-gray-900">98</span>
+                            <span class="text-sm font-bold text-gray-900">372</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-primary h-3 rounded-full" style="width: 40%"></div>
+                            <div class="bg-primary h-3 rounded-full" style="width: 30%"></div>
                         </div>
                         
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">Proposal</span>
-                            <span class="text-sm font-bold text-gray-900">42</span>
+                            <span class="text-sm font-bold text-gray-900">186</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-secondary h-3 rounded-full" style="width: 17%"></div>
+                            <div class="bg-secondary h-3 rounded-full" style="width: 15%"></div>
                         </div>
                         
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-600">Won</span>
-                            <span class="text-sm font-bold text-green-600">28</span>
+                            <span class="text-sm font-bold text-green-600">124</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-green-500 h-3 rounded-full" style="width: 11%"></div>
+                            <div class="bg-green-500 h-3 rounded-full" style="width: 10%"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
-                        <button onclick="showPage('pipeline')" class="w-full flex items-center justify-between p-4 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <span class="font-medium">View Pipeline</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button onclick="showPage('pipeline')" class="w-full flex items-center justify-between p-4 bg-primary/5 hover:bg-primary/10 rounded-lg transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-900">View Pipeline</span>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </button>
-                        <button onclick="showPage('approvals')" class="w-full flex items-center justify-between p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
-                            <span class="font-medium">Approve Discounts (3)</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <button onclick="showPage('approvals')" class="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="font-medium text-gray-900">Approve Discounts</span>
+                                    <p class="text-sm text-gray-500">3 pending approvals</p>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </button>
-                        <button onclick="showPage('coaching')" class="w-full flex items-center justify-between p-4 bg-secondary text-white rounded-lg hover:bg-teal-600 transition-colors">
-                            <span class="font-medium">Schedule Coaching</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <button onclick="showPage('coaching')" class="w-full flex items-center justify-between p-4 bg-secondary/5 hover:bg-secondary/10 rounded-lg transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-900">Schedule Coaching</span>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </button>
@@ -290,7 +320,7 @@
             </div>
 
             <!-- Leaderboard -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div class="p-6 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900">Team Leaderboard</h3>
                 </div>
@@ -307,84 +337,81 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center justify-center w-6 h-6 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">1</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white text-sm font-medium">NA</span>
-                                        </div>
-                                        <div class="ml-3">
-                                            <div class="text-sm font-medium text-gray-900">Nguyễn Văn An</div>
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23059669'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ENA%3C/text%3E%3C/svg%3E" 
+                                             class="w-8 h-8 rounded-full mr-3" alt="Avatar">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">Nguyen Van A</div>
                                             <div class="text-sm text-gray-500">Senior Sales Rep</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">850M VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">75%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">680M VND</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">34</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">78%</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                             <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
                                         </div>
-                                        <span class="ml-2 text-sm text-gray-600">85%</span>
+                                        <span class="text-sm text-gray-900">85%</span>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-800 text-sm font-medium rounded-full">2</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white text-sm font-medium">LH</span>
-                                        </div>
-                                        <div class="ml-3">
-                                            <div class="text-sm font-medium text-gray-900">Lê Thị Hương</div>
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23DC2626'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                             class="w-8 h-8 rounded-full mr-3" alt="Avatar">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">Tran Thi B</div>
                                             <div class="text-sm text-gray-500">Sales Rep</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">720M VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">9</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">69%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">520M VND</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">28</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">72%</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
                                         </div>
-                                        <span class="ml-2 text-sm text-gray-600">72%</span>
+                                        <span class="text-sm text-gray-900">65%</span>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-800 text-sm font-medium rounded-full">3</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                            <span class="text-white text-sm font-medium">PD</span>
-                                        </div>
-                                        <div class="ml-3">
-                                            <div class="text-sm font-medium text-gray-900">Phạm Minh Đức</div>
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%237C3AED'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                             class="w-8 h-8 rounded-full mr-3" alt="Avatar">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">Le Van C</div>
                                             <div class="text-sm text-gray-500">Sales Rep</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">680M VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">62%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">480M VND</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">25</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">69%</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2">
-                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 68%"></div>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 60%"></div>
                                         </div>
-                                        <span class="ml-2 text-sm text-gray-600">68%</span>
+                                        <span class="text-sm text-gray-900">60%</span>
                                     </div>
                                 </td>
                             </tr>
@@ -395,117 +422,129 @@
         </div>
 
         <!-- Pipeline Page -->
-        <div id="pipeline-page" class="page-content hidden p-6">
+        <div id="pipelinePage" class="page-content p-6 hidden">
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900">Pipeline Monitoring</h1>
-                <p class="text-gray-600">Monitor and manage all active deals</p>
+                <p class="text-gray-600">Track and manage all active deals</p>
             </div>
 
             <!-- Filters -->
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
                 <div class="flex flex-wrap gap-4">
                     <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                         <option>All Stages</option>
+                        <option>Lead</option>
                         <option>Contacted</option>
                         <option>Proposal</option>
                         <option>Negotiation</option>
                     </select>
                     <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                         <option>All Owners</option>
-                        <option>Nguyễn Văn An</option>
-                        <option>Lê Thị Hương</option>
-                        <option>Phạm Minh Đức</option>
+                        <option>Nguyen Van A</option>
+                        <option>Tran Thi B</option>
+                        <option>Le Van C</option>
                     </select>
                     <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">Apply Filters</button>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Apply Filters</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Pipeline Table -->
-                <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Active Deals</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr onclick="selectDeal('deal1')" class="hover:bg-gray-50 cursor-pointer">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">Trường THPT Nguyễn Du</div>
-                                        <div class="text-sm text-gray-500">Hệ thống quản lý học sinh</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Proposal</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">450M VND</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Nguyễn Văn An</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12 days</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700">View</button>
-                                    </td>
-                                </tr>
-                                <tr onclick="selectDeal('deal2')" class="hover:bg-gray-50 cursor-pointer">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">Đại học Kinh tế TP.HCM</div>
-                                        <div class="text-sm text-gray-500">Phần mềm quản lý tài chính</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Negotiation</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1.2B VND</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Lê Thị Hương</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8 days</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700">View</button>
-                                    </td>
-                                </tr>
-                                <tr onclick="selectDeal('deal3')" class="hover:bg-gray-50 cursor-pointer">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">Trung tâm Anh ngữ ILA</div>
-                                        <div class="text-sm text-gray-500">Hệ thống CRM giáo dục</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Contacted</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">280M VND</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Phạm Minh Đức</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5 days</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Active Deals</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                                            Client ↕
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                                            Stage ↕
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                                            Value ↕
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                                            Owner ↕
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+                                            Age ↕
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectDeal('deal1')">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Trung tâm Anh ngữ ABC</div>
+                                            <div class="text-sm text-gray-500">IELTS Course Package</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Proposal</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">45M VND</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Nguyen Van A</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12 days</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-primary hover:text-primary/80 mr-3">Reassign</button>
+                                            <button class="text-secondary hover:text-secondary/80">Coach</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectDeal('deal2')">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Học viện XYZ</div>
+                                            <div class="text-sm text-gray-500">Digital Marketing Course</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Contacted</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">28M VND</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Tran Thi B</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5 days</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-primary hover:text-primary/80 mr-3">Reassign</button>
+                                            <button class="text-secondary hover:text-secondary/80">Coach</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectDeal('deal3')">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Công ty Giáo dục DEF</div>
+                                            <div class="text-sm text-gray-500">Corporate Training</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Negotiation</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">120M VND</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Le Van C</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8 days</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-red-600 hover:text-red-800 mr-3">Approve Discount</button>
+                                            <button class="text-secondary hover:text-secondary/80">Coach</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Deal Details Panel -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Deal Details</h3>
-                    </div>
-                    <div id="deal-details" class="p-6">
-                        <div class="text-center text-gray-500 py-8">
-                            Select a deal to view details
-                        </div>
+                <div class="lg:col-span-1">
+                    <div id="dealDetails" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Deal Details</h3>
+                        <p class="text-gray-500 text-center py-8">Select a deal to view details</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Coaching Page -->
-        <div id="coaching-page" class="page-content hidden p-6">
+        <div id="coachingPage" class="page-content p-6 hidden">
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900">Coaching & Team Activity</h1>
                 <p class="text-gray-600">Monitor team activities and provide coaching</p>
@@ -513,122 +552,138 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- Activity Feed -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                     <div class="p-6 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Recent Activities</h3>
                     </div>
                     <div class="p-6 space-y-4 max-h-96 overflow-y-auto">
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-medium">NA</span>
-                            </div>
+                        <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23059669'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ENA%3C/text%3E%3C/svg%3E" 
+                                 class="w-8 h-8 rounded-full" alt="Avatar">
                             <div class="flex-1">
-                                <p class="text-sm text-gray-900"><strong>Nguyễn Văn An</strong> completed call with Trường THPT Nguyễn Du</p>
+                                <p class="text-sm font-medium text-gray-900">Nguyen Van A</p>
+                                <p class="text-sm text-gray-600">Called Trung tâm Anh ngữ ABC - Discussed pricing options</p>
                                 <p class="text-xs text-gray-500">2 hours ago</p>
-                                <div class="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-700">
-                                    "Client is interested in the premium package. Need to prepare detailed proposal by Friday."
-                                </div>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-medium">LH</span>
-                            </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23DC2626'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                 class="w-8 h-8 rounded-full" alt="Avatar">
                             <div class="flex-1">
-                                <p class="text-sm text-gray-900"><strong>Lê Thị Hương</strong> sent proposal to Đại học Kinh tế TP.HCM</p>
+                                <p class="text-sm font-medium text-gray-900">Tran Thi B</p>
+                                <p class="text-sm text-gray-600">🚨 <strong>Coachable Moment:</strong> Lost deal due to pricing objection</p>
                                 <p class="text-xs text-gray-500">4 hours ago</p>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-2">Needs Review</span>
+                                <button class="mt-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Schedule Coaching</button>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-medium">PD</span>
-                            </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%237C3AED'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial' font-size='12' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                 class="w-8 h-8 rounded-full" alt="Avatar">
                             <div class="flex-1">
-                                <p class="text-sm text-gray-900"><strong>Phạm Minh Đức</strong> scheduled demo for ILA English Center</p>
+                                <p class="text-sm font-medium text-gray-900">Le Van C</p>
+                                <p class="text-sm text-gray-600">Sent proposal to Công ty Giáo dục DEF - 120M VND</p>
                                 <p class="text-xs text-gray-500">6 hours ago</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Coachable Moments -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Coachable Moments</h3>
+                <!-- Coaching Calendar -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">Coaching Schedule</h3>
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                            Book 1:1 Session
+                        </button>
                     </div>
-                    <div class="p-6 space-y-4">
-                        <div class="border-l-4 border-orange-400 pl-4">
-                            <div class="flex items-center justify-between">
-                                <h4 class="font-medium text-gray-900">Long Deal Cycle</h4>
-                                <span class="text-xs text-gray-500">Phạm Minh Đức</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mt-1">Deal with Trung tâm Tin học ABC has been in proposal stage for 45 days</p>
-                            <button class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">Schedule Coaching →</button>
+                    <div class="p-6">
+                        <div class="grid grid-cols-7 gap-1 mb-4">
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Mon</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Tue</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Wed</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Thu</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Fri</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Sat</div>
+                            <div class="text-center text-xs font-medium text-gray-500 py-2">Sun</div>
                         </div>
-                        
-                        <div class="border-l-4 border-red-400 pl-4">
-                            <div class="flex items-center justify-between">
-                                <h4 class="font-medium text-gray-900">Low Activity</h4>
-                                <span class="text-xs text-gray-500">Lê Thị Hương</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mt-1">Only 2 client interactions this week, below team average</p>
-                            <button class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">Book 1:1 Session →</button>
+                        <div class="grid grid-cols-7 gap-1">
+                            <div class="text-center py-2 text-sm text-gray-400">28</div>
+                            <div class="text-center py-2 text-sm text-gray-400">29</div>
+                            <div class="text-center py-2 text-sm text-gray-400">30</div>
+                            <div class="text-center py-2 text-sm text-gray-900">1</div>
+                            <div class="text-center py-2 text-sm text-gray-900">2</div>
+                            <div class="text-center py-2 text-sm text-gray-900">3</div>
+                            <div class="text-center py-2 text-sm text-gray-900">4</div>
+                            <div class="text-center py-2 text-sm text-gray-900">5</div>
+                            <div class="text-center py-2 text-sm text-gray-900">6</div>
+                            <div class="text-center py-2 text-sm text-gray-900">7</div>
+                            <div class="text-center py-2 text-sm text-gray-900">8</div>
+                            <div class="text-center py-2 text-sm text-gray-900 bg-primary text-white rounded">9</div>
+                            <div class="text-center py-2 text-sm text-gray-900">10</div>
+                            <div class="text-center py-2 text-sm text-gray-900">11</div>
+                            <div class="text-center py-2 text-sm text-gray-900">12</div>
+                            <div class="text-center py-2 text-sm text-gray-900 bg-secondary text-white rounded">13</div>
+                            <div class="text-center py-2 text-sm text-gray-900">14</div>
+                            <div class="text-center py-2 text-sm text-gray-900">15</div>
+                            <div class="text-center py-2 text-sm text-gray-900">16</div>
+                            <div class="text-center py-2 text-sm text-gray-900">17</div>
+                            <div class="text-center py-2 text-sm text-gray-900">18</div>
                         </div>
-                        
-                        <div class="border-l-4 border-green-400 pl-4">
-                            <div class="flex items-center justify-between">
-                                <h4 class="font-medium text-gray-900">Great Performance</h4>
-                                <span class="text-xs text-gray-500">Nguyễn Văn An</span>
+                        <div class="mt-4 space-y-2">
+                            <div class="flex items-center text-sm">
+                                <div class="w-3 h-3 bg-primary rounded mr-2"></div>
+                                <span>Nguyen Van A - 2:00 PM</span>
                             </div>
-                            <p class="text-sm text-gray-600 mt-1">Closed 3 deals this week, 150% of target</p>
-                            <button class="mt-2 text-sm text-primary hover:text-blue-700 font-medium">Share Best Practices →</button>
+                            <div class="flex items-center text-sm">
+                                <div class="w-3 h-3 bg-secondary rounded mr-2"></div>
+                                <span>Tran Thi B - 10:00 AM</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Coaching Calendar -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">Coaching Schedule</h3>
-                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">Book Session</button>
+            <!-- Coachable Moments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Coachable Moments</h3>
                 </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-7 gap-4 mb-4">
-                        <div class="text-center text-sm font-medium text-gray-500">Mon</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Tue</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Wed</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Thu</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Fri</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Sat</div>
-                        <div class="text-center text-sm font-medium text-gray-500">Sun</div>
+                <div class="p-6 space-y-4">
+                    <div class="border border-yellow-200 bg-yellow-50 rounded-lg p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23DC2626'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-family='Arial' font-size='10' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                         class="w-6 h-6 rounded-full" alt="Avatar">
+                                    <span class="font-medium text-gray-900">Tran Thi B</span>
+                                    <span class="text-sm text-yellow-600 bg-yellow-100 px-2 py-1 rounded">Needs Coaching</span>
+                                </div>
+                                <p class="text-sm text-gray-700 mb-2">Lost deal with Học viện PQR due to pricing objection. Customer mentioned competitor offering 20% lower price.</p>
+                                <p class="text-xs text-gray-500">Deal Value: 35M VND • Lost 2 hours ago</p>
+                            </div>
+                            <button class="ml-4 px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-sm hover:bg-yellow-200 transition-colors">
+                                Assign Task
+                            </button>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-7 gap-4">
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">15</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">16</div>
-                            <div class="text-xs bg-primary text-white rounded px-1 mt-1">1:1 with LH</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">17</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">18</div>
-                            <div class="text-xs bg-secondary text-white rounded px-1 mt-1">Team Review</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">19</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">20</div>
-                        </div>
-                        <div class="h-20 border border-gray-200 rounded p-2">
-                            <div class="text-sm text-gray-600">21</div>
+
+                    <div class="border border-blue-200 bg-blue-50 rounded-lg p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%237C3AED'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-family='Arial' font-size='10' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                         class="w-6 h-6 rounded-full" alt="Avatar">
+                                    <span class="font-medium text-gray-900">Le Van C</span>
+                                    <span class="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">Good Practice</span>
+                                </div>
+                                <p class="text-sm text-gray-700 mb-2">Excellent discovery call with Công ty Giáo dục DEF. Identified 3 key pain points and positioned our solution perfectly.</p>
+                                <p class="text-xs text-gray-500">Deal Value: 120M VND • Call completed 4 hours ago</p>
+                            </div>
+                            <button class="ml-4 px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200 transition-colors">
+                                Share Best Practice
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -636,391 +691,389 @@
         </div>
 
         <!-- Approvals Page -->
-        <div id="approvals-page" class="page-content hidden p-6">
+        <div id="approvalsPage" class="page-content p-6 hidden">
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900">Approvals</h1>
                 <p class="text-gray-600">Review and approve special pricing requests</p>
             </div>
 
-            <!-- Pending Approvals -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Pending Approvals (3)</h3>
-                </div>
-                <div class="divide-y divide-gray-200">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-3">
-                                    <h4 class="text-lg font-medium text-gray-900">Trường THPT Lê Quý Đôn</h4>
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Urgent</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Pending Approvals -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Pending Approvals</h3>
+                            <span class="bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full">3 pending</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="border border-red-200 bg-red-50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">Trung tâm Anh ngữ ABC</h4>
+                                        <p class="text-sm text-gray-600">IELTS Course Package</p>
+                                    </div>
+                                    <span class="text-sm text-red-600 bg-red-100 px-2 py-1 rounded">High Priority</span>
                                 </div>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div class="grid grid-cols-2 gap-4 mb-3">
                                     <div>
-                                        <p class="text-sm text-gray-500">Proposed Price</p>
-                                        <p class="text-lg font-semibold text-red-600">320M VND</p>
+                                        <p class="text-xs text-gray-500">Standard Price</p>
+                                        <p class="text-lg font-semibold text-gray-900">50M VND</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-500">Standard Price</p>
-                                        <p class="text-lg font-semibold text-gray-900">400M VND</p>
+                                        <p class="text-xs text-gray-500">Proposed Price</p>
+                                        <p class="text-lg font-semibold text-red-600">45M VND (-10%)</p>
                                     </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Discount</p>
-                                        <p class="text-lg font-semibold text-orange-600">20%</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Sales Rep</p>
-                                        <p class="text-lg font-semibold text-gray-900">Nguyễn Văn An</p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-xs text-gray-500 mb-1">Sales Rep</p>
+                                    <div class="flex items-center space-x-2">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23059669'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-family='Arial' font-size='10' font-weight='bold'%3ENA%3C/text%3E%3C/svg%3E" 
+                                             class="w-6 h-6 rounded-full" alt="Avatar">
+                                        <span class="text-sm font-medium text-gray-900">Nguyen Van A</span>
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <p class="text-sm text-gray-500 mb-2">Reason for Exception</p>
-                                    <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded">
-                                        "Client is a government school with limited budget. They're willing to sign a 3-year contract and provide case study testimonial. This deal will help us establish presence in the public education sector."
-                                    </p>
+                                    <p class="text-xs text-gray-500 mb-1">Reason for Exception</p>
+                                    <p class="text-sm text-gray-700">Competitor offering similar package at 45M VND. Customer is price-sensitive but high-volume potential (200+ students).</p>
                                 </div>
-                                <textarea placeholder="Add your comment..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mb-4"></textarea>
+                                <div class="flex space-x-3">
+                                    <button onclick="approveRequest('abc')" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                        Approve
+                                    </button>
+                                    <button onclick="rejectRequest('abc')" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                        Reject
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <button onclick="approveRequest(this)" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">Approve</button>
-                            <button onclick="rejectRequest(this)" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">Reject</button>
-                            <button class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">Request More Info</button>
-                        </div>
-                    </div>
 
-                    <div class="p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-3">
-                                    <h4 class="text-lg font-medium text-gray-900">Trung tâm Anh ngữ Apollo</h4>
+                            <div class="border border-yellow-200 bg-yellow-50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">Công ty Giáo dục DEF</h4>
+                                        <p class="text-sm text-gray-600">Corporate Training Package</p>
+                                    </div>
+                                    <span class="text-sm text-yellow-600 bg-yellow-100 px-2 py-1 rounded">Medium Priority</span>
                                 </div>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div class="grid grid-cols-2 gap-4 mb-3">
                                     <div>
-                                        <p class="text-sm text-gray-500">Proposed Price</p>
-                                        <p class="text-lg font-semibold text-red-600">180M VND</p>
+                                        <p class="text-xs text-gray-500">Standard Price</p>
+                                        <p class="text-lg font-semibold text-gray-900">150M VND</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-500">Standard Price</p>
-                                        <p class="text-lg font-semibold text-gray-900">220M VND</p>
+                                        <p class="text-xs text-gray-500">Proposed Price</p>
+                                        <p class="text-lg font-semibold text-yellow-600">120M VND (-20%)</p>
                                     </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Discount</p>
-                                        <p class="text-lg font-semibold text-orange-600">18%</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Sales Rep</p>
-                                        <p class="text-lg font-semibold text-gray-900">Lê Thị Hương</p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-xs text-gray-500 mb-1">Sales Rep</p>
+                                    <div class="flex items-center space-x-2">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%237C3AED'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-family='Arial' font-size='10' font-weight='bold'%3ELC%3C/text%3E%3C/svg%3E" 
+                                             class="w-6 h-6 rounded-full" alt="Avatar">
+                                        <span class="text-sm font-medium text-gray-900">Le Van C</span>
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <p class="text-sm text-gray-500 mb-2">Reason for Exception</p>
-                                    <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded">
-                                        "Competitor offered similar solution at 175M VND. Client prefers our product but needs price match to proceed. They have 5 locations and potential for expansion."
-                                    </p>
+                                    <p class="text-xs text-gray-500 mb-1">Reason for Exception</p>
+                                    <p class="text-sm text-gray-700">Large enterprise client requesting volume discount. Potential for 3-year contract renewal.</p>
                                 </div>
-                                <textarea placeholder="Add your comment..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mb-4"></textarea>
+                                <div class="flex space-x-3">
+                                    <button onclick="approveRequest('def')" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                        Approve
+                                    </button>
+                                    <button onclick="rejectRequest('def')" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                        Reject
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <button onclick="approveRequest(this)" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">Approve</button>
-                            <button onclick="rejectRequest(this)" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">Reject</button>
-                            <button class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">Request More Info</button>
-                        </div>
-                    </div>
 
-                    <div class="p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3 mb-3">
-                                    <h4 class="text-lg font-medium text-gray-900">Đại học Công nghệ Thông tin</h4>
+                            <div class="border border-blue-200 bg-blue-50 rounded-lg p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">Học viện GHI</h4>
+                                        <p class="text-sm text-gray-600">Digital Marketing Bootcamp</p>
+                                    </div>
+                                    <span class="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">Low Priority</span>
                                 </div>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div class="grid grid-cols-2 gap-4 mb-3">
                                     <div>
-                                        <p class="text-sm text-gray-500">Proposed Price</p>
-                                        <p class="text-lg font-semibold text-red-600">850M VND</p>
+                                        <p class="text-xs text-gray-500">Standard Price</p>
+                                        <p class="text-lg font-semibold text-gray-900">35M VND</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-500">Standard Price</p>
-                                        <p class="text-lg font-semibold text-gray-900">1.1B VND</p>
+                                        <p class="text-xs text-gray-500">Proposed Price</p>
+                                        <p class="text-lg font-semibold text-blue-600">32M VND (-8%)</p>
                                     </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Discount</p>
-                                        <p class="text-lg font-semibold text-orange-600">23%</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Sales Rep</p>
-                                        <p class="text-lg font-semibold text-gray-900">Phạm Minh Đức</p>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-xs text-gray-500 mb-1">Sales Rep</p>
+                                    <div class="flex items-center space-x-2">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23DC2626'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-family='Arial' font-size='10' font-weight='bold'%3ETB%3C/text%3E%3C/svg%3E" 
+                                             class="w-6 h-6 rounded-full" alt="Avatar">
+                                        <span class="text-sm font-medium text-gray-900">Tran Thi B</span>
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <p class="text-sm text-gray-500 mb-2">Reason for Exception</p>
-                                    <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded">
-                                        "Large enterprise deal with 5-year contract commitment. University will serve as reference client for other educational institutions. Strategic importance for market expansion."
-                                    </p>
+                                    <p class="text-xs text-gray-500 mb-1">Reason for Exception</p>
+                                    <p class="text-sm text-gray-700">Early bird discount for Q1 enrollment. Customer committed to immediate payment.</p>
                                 </div>
-                                <textarea placeholder="Add your comment..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent mb-4"></textarea>
+                                <div class="flex space-x-3">
+                                    <button onclick="approveRequest('ghi')" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                        Approve
+                                    </button>
+                                    <button onclick="rejectRequest('ghi')" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                        Reject
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <button onclick="approveRequest(this)" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">Approve</button>
-                            <button onclick="rejectRequest(this)" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">Reject</button>
-                            <button class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">Request More Info</button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Recently Processed -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Recently Processed</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Trường THCS Trần Hưng Đạo</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">280M VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">15%</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dec 10, 2024</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Học viện Kỹ thuật Quân sự</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">650M VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">25%</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dec 8, 2024</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Approval History -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Recent Decisions</h3>
+                        </div>
+                        <div class="p-6 space-y-4 max-h-96 overflow-y-auto">
+                            <div class="border-l-4 border-green-400 pl-4">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-900">Học viện JKL</span>
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Approved</span>
+                                </div>
+                                <p class="text-xs text-gray-500">25M VND → 22M VND</p>
+                                <p class="text-xs text-gray-400">2 hours ago</p>
+                            </div>
+
+                            <div class="border-l-4 border-red-400 pl-4">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-900">Trung tâm MNO</span>
+                                    <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">Rejected</span>
+                                </div>
+                                <p class="text-xs text-gray-500">40M VND → 30M VND</p>
+                                <p class="text-xs text-gray-400">1 day ago</p>
+                            </div>
+
+                            <div class="border-l-4 border-green-400 pl-4">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-900">Công ty PQR</span>
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Approved</span>
+                                </div>
+                                <p class="text-xs text-gray-500">80M VND → 75M VND</p>
+                                <p class="text-xs text-gray-400">2 days ago</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Reports Page -->
-        <div id="reports-page" class="page-content hidden p-6">
+        <div id="reportsPage" class="page-content p-6 hidden">
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
-                <p class="text-gray-600">Analyze team performance and sales trends</p>
+                <p class="text-gray-600">High-level performance insights and trends</p>
             </div>
 
             <!-- Report Controls -->
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div class="flex flex-wrap gap-4">
                         <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option>Last 30 days</option>
-                            <option>Last 90 days</option>
-                            <option>This Quarter</option>
-                            <option>This Year</option>
+                            <option>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
                         </select>
                         <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option>All Team Members</option>
-                            <option>Nguyễn Văn An</option>
-                            <option>Lê Thị Hương</option>
-                            <option>Phạm Minh Đức</option>
+                            <option>All Team</option>
+                            <option>Nguyen Van A</option>
+                            <option>Tran Thi B</option>
+                            <option>Le Van C</option>
+                        </select>
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option>All Sources</option>
+                            <option>Website</option>
+                            <option>Referral</option>
+                            <option>Social Media</option>
                         </select>
                     </div>
                     <div class="flex gap-2">
-                        <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Export PDF</button>
-                        <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Export CSV</button>
-                        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">Schedule Email</button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                            Export PDF
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                            Export CSV
+                        </button>
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                            Schedule Email
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- Funnel Conversion Chart -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Funnel Conversion Rates</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Lead → MQL</span>
-                            <span class="text-sm font-medium">64%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-500 h-2 rounded-full" style="width: 64%"></div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">MQL → Contacted</span>
-                            <span class="text-sm font-medium">63%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-500 h-2 rounded-full" style="width: 63%"></div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Contacted → Proposal</span>
-                            <span class="text-sm font-medium">43%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 43%"></div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Proposal → Won</span>
-                            <span class="text-sm font-medium">67%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: 67%"></div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Funnel Conversion Rates</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-placeholder h-64 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <p class="text-gray-500">Stacked Bar Chart</p>
+                                <p class="text-sm text-gray-400">Lead → MQL → Contact → Proposal → Won</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Revenue by Source -->
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Revenue by Source</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Referrals</span>
-                            </div>
-                            <span class="text-sm font-medium">1.2B VND (50%)</span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Website</span>
-                            </div>
-                            <span class="text-sm font-medium">720M VND (30%)</span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Events</span>
-                            </div>
-                            <span class="text-sm font-medium">360M VND (15%)</span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Cold Outreach</span>
-                            </div>
-                            <span class="text-sm font-medium">120M VND (5%)</span>
-                        </div>
+                <!-- Revenue Trend -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Trend</h3>
                     </div>
-                    
-                    <!-- Simple pie chart representation -->
-                    <div class="mt-6 flex justify-center">
-                        <div class="w-32 h-32 rounded-full" style="background: conic-gradient(#3B82F6 0deg 180deg, #10B981 180deg 288deg, #F59E0B 288deg 342deg, #8B5CF6 342deg 360deg);"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Performance Trends -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Revenue Trend (Last 6 Months)</h3>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-end justify-between h-64 space-x-2">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-500 rounded-t" style="height: 120px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Jul</span>
-                            <span class="text-xs font-medium">300M</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-500 rounded-t" style="height: 140px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Aug</span>
-                            <span class="text-xs font-medium">350M</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-500 rounded-t" style="height: 100px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Sep</span>
-                            <span class="text-xs font-medium">250M</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-500 rounded-t" style="height: 180px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Oct</span>
-                            <span class="text-xs font-medium">450M</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-500 rounded-t" style="height: 160px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Nov</span>
-                            <span class="text-xs font-medium">400M</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t" style="height: 200px;"></div>
-                            <span class="text-xs text-gray-600 mt-2">Dec</span>
-                            <span class="text-xs font-medium">500M</span>
+                    <div class="p-6">
+                        <div class="chart-placeholder h-64 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                <p class="text-gray-500">Line Chart</p>
+                                <p class="text-sm text-gray-400">Monthly revenue progression</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Lost Deal Analysis -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Lost Deal Reasons</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Lead Sources -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Lead Sources</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-placeholder h-48 rounded-lg flex items-center justify-center mb-4">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
+                                <p class="text-gray-500">Pie Chart</p>
+                                <p class="text-sm text-gray-400">Revenue by source</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-primary rounded"></div>
+                                    <span class="text-sm text-gray-600">Website</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">45%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-secondary rounded"></div>
+                                    <span class="text-sm text-gray-600">Referral</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">30%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                                    <span class="text-sm text-gray-600">Social Media</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">25%</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lost Value</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Price too high</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">40%</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">480M VND</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Chose competitor</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">25%</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">320M VND</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Budget constraints</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">20%</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">240M VND</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Timeline mismatch</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">15%</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">180M VND</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Win/Loss Analysis -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Win/Loss Analysis</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="chart-placeholder h-48 rounded-lg flex items-center justify-center mb-4">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-2"></div>
+                                <p class="text-gray-500">Donut Chart</p>
+                                <p class="text-sm text-gray-400">Won vs Lost deals</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-green-500 rounded"></div>
+                                    <span class="text-sm text-gray-600">Won</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">68%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-red-500 rounded"></div>
+                                    <span class="text-sm text-gray-600">Lost</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">32%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lost Deal Reasons -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Lost Deal Reasons</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Price too high</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">45%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Competitor chosen</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-orange-500 h-2 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">30%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">No budget</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">15%</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Timing issues</span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full" style="width: 10%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">10%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Mobile Navigation Toggle -->
-    <button onclick="toggleSidebar()" class="lg:hidden fixed bottom-4 right-4 z-50 w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden hidden"></div>
 
     <script>
         // Navigation functionality
@@ -1031,208 +1084,210 @@
             });
             
             // Show selected page
-            document.getElementById(pageId + '-page').classList.remove('hidden');
+            document.getElementById(pageId + 'Page').classList.remove('hidden');
             
-            // Update navigation active state
+            // Update active nav item
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+                item.classList.remove('active', 'bg-primary', 'text-white');
+                item.classList.add('text-gray-700', 'hover:bg-gray-100');
             });
             
-            // Find and activate the corresponding nav item
-            const navItem = document.querySelector(`[onclick="showPage('${pageId}')"]`);
-            if (navItem) {
-                navItem.classList.add('active');
-            }
+            // Set active nav item
+            event.target.closest('.nav-item').classList.add('active', 'bg-primary', 'text-white');
+            event.target.closest('.nav-item').classList.remove('text-gray-700', 'hover:bg-gray-100');
         }
 
-        // Sidebar toggle for mobile
-        function toggleSidebar() {
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
-        }
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (window.innerWidth < 1024) {
+                // Mobile behavior
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('sidebar-collapsed');
+                mainContent.classList.toggle('main-expanded');
+                
+                // Toggle text visibility
+                document.querySelectorAll('.sidebar-text').forEach(text => {
+                    text.classList.toggle('hidden');
+                });
+            }
+        });
 
-        // User menu toggle
-        function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.classList.toggle('hidden');
-        }
+        // Close mobile sidebar when clicking overlay
+        document.getElementById('mobileOverlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            this.classList.add('hidden');
+        });
 
-        // Deal selection in pipeline
+        // Pipeline deal selection
         function selectDeal(dealId) {
-            const dealDetails = document.getElementById('deal-details');
+            const dealDetails = document.getElementById('dealDetails');
             
             const dealData = {
-                'deal1': {
-                    name: 'Trường THPT Nguyễn Du',
-                    value: '450M VND',
+                deal1: {
+                    client: 'Trung tâm Anh ngữ ABC',
+                    course: 'IELTS Course Package',
+                    value: '45M VND',
                     stage: 'Proposal',
-                    owner: 'Nguyễn Văn An',
-                    notes: 'Client is interested in premium package. Scheduled follow-up call for Friday.',
+                    owner: 'Nguyen Van A',
+                    age: '12 days',
+                    notes: 'Customer is interested but concerned about pricing. Competitor offering similar package at lower price.',
                     activities: [
-                        'Demo completed - Dec 10',
-                        'Proposal sent - Dec 8',
-                        'Initial contact - Dec 5'
+                        'Called customer - discussed curriculum details',
+                        'Sent detailed proposal with pricing breakdown',
+                        'Customer requested competitor comparison'
                     ]
                 },
-                'deal2': {
-                    name: 'Đại học Kinh tế TP.HCM',
-                    value: '1.2B VND',
-                    stage: 'Negotiation',
-                    owner: 'Lê Thị Hương',
-                    notes: 'Large enterprise deal. Discussing implementation timeline and training requirements.',
-                    activities: [
-                        'Contract review - Dec 11',
-                        'Technical demo - Dec 9',
-                        'Stakeholder meeting - Dec 7'
-                    ]
-                },
-                'deal3': {
-                    name: 'Trung tâm Anh ngữ ILA',
-                    value: '280M VND',
+                deal2: {
+                    client: 'Học viện XYZ',
+                    course: 'Digital Marketing Course',
+                    value: '28M VND',
                     stage: 'Contacted',
-                    owner: 'Phạm Minh Đức',
-                    notes: 'Initial interest shown. Need to schedule product demo.',
+                    owner: 'Tran Thi B',
+                    age: '5 days',
+                    notes: 'Initial contact made. Customer interested in group training for 15 employees.',
                     activities: [
-                        'First call completed - Dec 12',
-                        'Lead qualification - Dec 10'
+                        'Initial discovery call completed',
+                        'Sent course brochure and schedule',
+                        'Follow-up meeting scheduled for next week'
+                    ]
+                },
+                deal3: {
+                    client: 'Công ty Giáo dục DEF',
+                    course: 'Corporate Training',
+                    value: '120M VND',
+                    stage: 'Negotiation',
+                    owner: 'Le Van C',
+                    age: '8 days',
+                    notes: 'Large enterprise deal. Customer requesting volume discount and extended payment terms.',
+                    activities: [
+                        'Proposal presented to decision makers',
+                        'Negotiating pricing and terms',
+                        'Legal review in progress'
                     ]
                 }
             };
-            
+
             const deal = dealData[dealId];
             if (deal) {
                 dealDetails.innerHTML = `
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Deal Details</h3>
                     <div class="space-y-4">
                         <div>
-                            <h4 class="font-semibold text-gray-900">${deal.name}</h4>
-                            <p class="text-sm text-gray-600">${deal.value} • ${deal.stage}</p>
+                            <h4 class="font-medium text-gray-900">${deal.client}</h4>
+                            <p class="text-sm text-gray-600">${deal.course}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-gray-500">Value</p>
+                                <p class="font-semibold text-gray-900">${deal.value}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Stage</p>
+                                <p class="font-semibold text-gray-900">${deal.stage}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-gray-500">Owner</p>
+                                <p class="font-semibold text-gray-900">${deal.owner}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Age</p>
+                                <p class="font-semibold text-gray-900">${deal.age}</p>
+                            </div>
                         </div>
                         <div>
-                            <h5 class="text-sm font-medium text-gray-700 mb-2">Owner</h5>
-                            <p class="text-sm text-gray-600">${deal.owner}</p>
+                            <p class="text-xs text-gray-500 mb-2">Notes</p>
+                            <p class="text-sm text-gray-700">${deal.notes}</p>
                         </div>
                         <div>
-                            <h5 class="text-sm font-medium text-gray-700 mb-2">Notes</h5>
-                            <p class="text-sm text-gray-600">${deal.notes}</p>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-medium text-gray-700 mb-2">Recent Activities</h5>
-                            <ul class="text-sm text-gray-600 space-y-1">
-                                ${deal.activities.map(activity => `<li>• ${activity}</li>`).join('')}
+                            <p class="text-xs text-gray-500 mb-2">Recent Activities</p>
+                            <ul class="space-y-1">
+                                ${deal.activities.map(activity => `<li class="text-sm text-gray-600">• ${activity}</li>`).join('')}
                             </ul>
                         </div>
                         <div class="flex space-x-2 pt-4">
-                            <button class="px-3 py-1 bg-primary text-white text-sm rounded hover:bg-blue-700">Reassign</button>
-                            <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded hover:bg-orange-600">Flag for Coaching</button>
+                            <button class="flex-1 bg-primary text-white py-2 px-3 rounded text-sm hover:bg-primary/90 transition-colors">
+                                Reassign
+                            </button>
+                            <button class="flex-1 bg-secondary text-white py-2 px-3 rounded text-sm hover:bg-secondary/90 transition-colors">
+                                Flag for Coaching
+                            </button>
                         </div>
                     </div>
                 `;
             }
         }
 
-        // Approval actions
-        function approveRequest(button) {
-            const card = button.closest('.p-6');
-            card.style.backgroundColor = '#f0fdf4';
-            card.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-green-900 mb-2">Request Approved</h3>
-                    <p class="text-green-700">The pricing exception has been approved and the sales rep has been notified.</p>
-                </div>
-            `;
+        // Approval functions
+        function approveRequest(requestId) {
+            const button = event.target;
+            button.textContent = 'Approved';
+            button.className = 'flex-1 bg-green-600 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed';
+            button.disabled = true;
             
-            // Update approval count
-            setTimeout(() => {
-                updateApprovalCount();
-            }, 2000);
+            // Disable reject button too
+            const rejectButton = button.nextElementSibling;
+            rejectButton.className = 'flex-1 bg-gray-400 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed';
+            rejectButton.disabled = true;
+            rejectButton.textContent = 'Rejected';
+            
+            // Update the card appearance
+            const card = button.closest('.border');
+            card.classList.remove('border-red-200', 'bg-red-50', 'border-yellow-200', 'bg-yellow-50', 'border-blue-200', 'bg-blue-50');
+            card.classList.add('border-green-200', 'bg-green-50');
         }
 
-        function rejectRequest(button) {
-            const card = button.closest('.p-6');
-            card.style.backgroundColor = '#fef2f2';
-            card.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-red-900 mb-2">Request Rejected</h3>
-                    <p class="text-red-700">The pricing exception has been rejected and the sales rep has been notified.</p>
-                </div>
-            `;
+        function rejectRequest(requestId) {
+            const button = event.target;
+            button.textContent = 'Rejected';
+            button.className = 'flex-1 bg-red-600 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed';
+            button.disabled = true;
             
-            // Update approval count
-            setTimeout(() => {
-                updateApprovalCount();
-            }, 2000);
+            // Disable approve button too
+            const approveButton = button.previousElementSibling;
+            approveButton.className = 'flex-1 bg-gray-400 text-white py-2 px-4 rounded-lg opacity-50 cursor-not-allowed';
+            approveButton.disabled = true;
+            approveButton.textContent = 'Approved';
+            
+            // Update the card appearance
+            const card = button.closest('.border');
+            card.classList.remove('border-red-200', 'bg-red-50', 'border-yellow-200', 'bg-yellow-50', 'border-blue-200', 'bg-blue-50');
+            card.classList.add('border-gray-200', 'bg-gray-50');
         }
 
-        function updateApprovalCount() {
-            const badge = document.querySelector('.nav-item .bg-red-500');
-            if (badge) {
-                let count = parseInt(badge.textContent);
-                count = Math.max(0, count - 1);
-                badge.textContent = count;
-                if (count === 0) {
-                    badge.style.display = 'none';
-                }
-            }
-        }
-
-        // Close user menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const userMenu = document.getElementById('userMenu');
-            const userButton = event.target.closest('button');
-            
-            if (!userButton || !userButton.onclick || userButton.onclick.toString().indexOf('toggleUserMenu') === -1) {
-                userMenu.classList.add('hidden');
-            }
+        // Initialize with dashboard active
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('[onclick="showPage(\'dashboard\')"]').classList.add('active', 'bg-primary', 'text-white');
+            document.querySelector('[onclick="showPage(\'dashboard\')"]').classList.remove('text-gray-700', 'hover:bg-gray-100');
         });
 
         // Responsive sidebar handling
         window.addEventListener('resize', function() {
             const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('mobileOverlay');
+            
             if (window.innerWidth >= 1024) {
+                // Desktop - reset mobile classes
                 sidebar.classList.remove('-translate-x-full');
+                overlay.classList.add('hidden');
             } else {
-                sidebar.classList.add('-translate-x-full');
+                // Mobile - reset desktop classes
+                sidebar.classList.remove('sidebar-collapsed');
+                mainContent.classList.remove('main-expanded');
+                document.querySelectorAll('.sidebar-text').forEach(text => {
+                    text.classList.remove('hidden');
+                });
             }
         });
-
-        // Initialize responsive state
-        if (window.innerWidth < 1024) {
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-        }
     </script>
-
-    <style>
-        .nav-item {
-            @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors;
-        }
-        
-        .nav-item.active {
-            @apply text-primary bg-blue-50 border-r-2 border-primary;
-        }
-        
-        @media (max-width: 1023px) {
-            .ml-64 {
-                margin-left: 0;
-            }
-            
-            #sidebar {
-                transform: translateX(-100%);
-            }
-            
-            #sidebar:not(.-translate-x-full) {
-                transform: translateX(0);
-            }
-        }
-    </style>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982ef76be51784ac',t:'MTc1ODUxNDM3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982f11e4023bdd4b',t:'MTc1ODUxNTQ1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
